@@ -1,0 +1,11 @@
+
+.. List of common strings used in the documentation
+
+.. Package Information
+
+.. |PkgName| replace:: KiwiFarmer
+.. |PkgFullName| replace:: KiwiFarmer
+.. |PkgPyName| replace:: pycudeconv
+.. |PkgVersion| replace:: 0.1
+.. |PkgReleaseDate| replace:: March 16, 2020
+.. |PkgTarBall| replace:: pycup-|PkgVersion|.tar.gz
