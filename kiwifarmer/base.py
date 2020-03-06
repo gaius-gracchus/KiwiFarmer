@@ -27,17 +27,29 @@ class Thread:
   #---------------------------------------------------------------------------#
 
   def __init__( self,
-    thread_url ):
+    input,
+    input_type = 'soup' ):
 
-    # store thread URL as class variable
-    self.thread_url = thread_url
+    if input_type is 'soup':
+
+      # store parsable BeautifulSoup object as class variable
+      self.soup = input
+
+      # get thread url from soup
+      self.thread_url = self.soup.find('link')['href']
+
+    elif input_type is 'url':
+
+      # store page URL as class variable
+      self.thread_url = input
+
+      # make HTTP request of thread URL
+      r = requests.get( self.thread_url )
+      # store HTML content of HTTP request as parsable BeautifulSoup object
+      self.soup = BeautifulSoup( r.content, features = 'lxml' )
+
     # store thread ID as class variable
     self.thread_id = functions.get_thread_id( thread_url = self.thread_url )
-
-    # make HTTP request of thread URL
-    r = requests.get( self.thread_url )
-    # store HTML content of HTTP request as parsable BeautifulSoup object
-    self.soup = BeautifulSoup( r.content, features = 'lxml' )
 
     # extract thread title and store as class variable
     self.thread_title = functions.get_thread_title( soup = self.soup )

@@ -17,22 +17,22 @@ from kiwifarmer import templates
 
 if __name__ == '__main__':
 
-  cnx = mysql.connector.connect(
-    user = os.getenv( 'KIWIFARMER_USER'),
-    password = os.getenv( 'KIWIFARMER_PASSWORD' ),
-    host = '127.0.0.1',
-    use_pure = False,
-    charset = 'utf8mb4',
-    collation = 'utf8mb4_bin',
-    use_unicode = True  )
+  # cnx = mysql.connector.connect(
+  #   user = os.getenv( 'KIWIFARMER_USER'),
+  #   password = os.getenv( 'KIWIFARMER_PASSWORD' ),
+  #   host = '127.0.0.1',
+  #   use_pure = False,
+  #   charset = 'utf8mb4',
+  #   collation = 'utf8mb4_bin',
+  #   use_unicode = True  )
 
-  cursor = cnx.cursor()
-  cursor.execute("CREATE DATABASE kiwifarms character set utf8mb4 collate utf8mb4_bin")
+  # cursor = cnx.cursor()
+  # cursor.execute("CREATE DATABASE kiwifarms character set utf8mb4 collate utf8mb4_bin")
 
-  cnx.commit()
+  # cnx.commit()
 
-  cursor.close()
-  cnx.close()
+  # cursor.close()
+  # cnx.close()
 
   #---------------------------------------------------------------------------#
 

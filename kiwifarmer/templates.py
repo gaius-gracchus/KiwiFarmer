@@ -51,8 +51,8 @@ TABLES = {
     "  `thread_id` int NOT NULL,"
     "  `thread_title` varchar(1024) NOT NULL,"
     "  `last_page` smallint NOT NULL,"
-    "  `creator_username` varchar(128) NOT NULL,"
-    "  `creator_user_id` mediumint NOT NULL,"
+    "  `creator_username` varchar(128),"
+    "  `creator_user_id` mediumint,"
     "  `thread_timestamp` int NOT NULL"
     ") ENGINE=InnoDB"),
   'posts' : (

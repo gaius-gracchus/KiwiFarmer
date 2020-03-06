@@ -15,10 +15,7 @@
    version="1.1"
    id="svg8"
    inkscape:version="0.92.3 (2405546, 2018-03-11)"
-   sodipodi:docname="database_schema.svg"
-   inkscape:export-filename="/home/tlee/Documents/projects/antifa/kiwifarms/KiwiFarmer/docs/figs/database_schema.png"
-   inkscape:export-xdpi="96"
-   inkscape:export-ydpi="96">
+   sodipodi:docname="database_schema.svg">
   <defs
      id="defs2" />
   <sodipodi:namedview
@@ -29,7 +26,7 @@
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
      inkscape:zoom="0.35355339"
-     inkscape:cx="361.4541"
+     inkscape:cx="855.01463"
      inkscape:cy="513.76503"
      inkscape:document-units="mm"
      inkscape:current-layer="layer1"
@@ -51,7 +48,7 @@
         <dc:format>image/svg+xml</dc:format>
         <dc:type
            rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
-        <dc:title />
+        <dc:title></dc:title>
       </cc:Work>
     </rdf:RDF>
   </metadata>

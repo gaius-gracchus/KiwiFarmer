@@ -122,7 +122,13 @@ def get_thread_creator_username( creation ):
 
   """
 
-  return str( creation.find('a', {'class' : 'username u-concealed'}).text )
+  tmp = creation.find('a', {'class' : 'username u-concealed'})
+
+  if tmp is None:
+    return None
+
+  else:
+    return str( tmp.text )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
@@ -144,7 +150,12 @@ def get_thread_creator_user_id( creation ):
 
   """
 
-  return int( creation.find('a', {'class' : 'username u-concealed'})['data-user-id'] )
+  tmp = creation.find('a', {'class' : 'username u-concealed'})
+
+  if tmp is None:
+    return None
+  else:
+    return int( tmp['data-user-id'] )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
