@@ -15,9 +15,9 @@ import requests
 
 ###############################################################################
 
-OUTPUT_DIR = '../../data/downloaded_reaction_pages'
+OUTPUT_DIR = 'downloaded_reaction_pages_serial'
 
-LAST_POST_ID = 6107471
+LAST_POST_ID = 1000
 
 ###############################################################################
 

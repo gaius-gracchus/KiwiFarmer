@@ -23,8 +23,6 @@ START = 0
 
 if __name__ == '__main__':
 
-  print(os.getenv( 'KIWIFARMER_USER'),os.getenv( 'KIWIFARMER_PASSWORD' ))
-
   cnx = mysql.connector.connect(
     user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),

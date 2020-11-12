@@ -18,9 +18,10 @@ from aiohttp import ClientSession
 
 ###############################################################################
 
-OUTPUT_DIR = '../../data/downloaded_reaction_pages'
+OUTPUT_DIR = 'downloaded_reaction_pages'
 
-LAST_POST_ID = 6107471
+# LAST_POST_ID = 7738473
+LAST_POST_ID = 1000
 
 ###############################################################################
 
@@ -38,7 +39,7 @@ async def make_request(session, url, sem):
 
 async def main():
 
-  sem = asyncio.Semaphore( 10 )
+  sem = asyncio.Semaphore( 25 )
 
   async with ClientSession() as session:
     coros = [ make_request( session, url, sem ) for url in urls ]

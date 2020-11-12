@@ -419,7 +419,7 @@ def get_post_blockquotes( message ):
 
 def get_post_images( message ):
 
-  """Extract list of image URLS from message BeautifulSoup object, and remove the image container tags from the message object.
+  """Extract list of image URLs from message BeautifulSoup object, and remove the image container tags from the message object.
 
   Parameters
   ----------
@@ -479,5 +479,154 @@ def process_text( text ):
   text = str( text.lstrip('. ').rstrip( ' ' ) )
 
   return text
+
+# Reaction field extraction functions
+###############################################################################
+
+def get_reaction_list( soup ):
+
+  """Extract list of reactions from the raw HTML of the reaction page
+  BeautifulSoup object.
+
+  Parameters
+  ----------
+  soup : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for first
+    page of reaction
+
+  Returns
+  -------
+  list
+    List of reactions to the given post
+
+  """
+
+  all_reactions = soup.find(
+    'ol', { 'class' : 'block-body js-reactionList-0' } )
+
+  reaction_list = all_reactions.find_all(
+    'li', { 'class' : 'block-row block-row--separated' } )
+
+  return reaction_list
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_reaction_author_name( reaction ):
+
+  """Extract the reactor username for a single reaction
+
+  Parameters
+  ----------
+  reaction : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a
+    reaction to a post.
+
+  Returns
+  -------
+  str
+    Username of thread creator
+    e.g. ``'Jewed Hunter'``
+  """
+
+  url = reaction.find(
+      'a',
+      {'class' : [
+        'avatar avatar--s',
+        'avatar avatar--s avatar--default avatar--default--dynamic' ] } )[ 'href' ]
+
+  return url.split( '/' )[ 2 ].split( '.' )[ 0 ]
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_reaction_author_id( reaction ):
+
+  """Extract the reactor user ID for a single reaction
+
+  Parameters
+  ----------
+  reaction : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a
+    reaction to a post.
+
+  Returns
+  -------
+  int
+    User ID of thread creator
+    e.g. ``20165``
+  """
+
+  return int( reaction.find(
+    'a',
+    {'class' : [
+      'avatar avatar--s',
+      'avatar avatar--s avatar--default avatar--default--dynamic' ] } )['data-user-id'] )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_reaction_id( reaction ):
+
+  """Extract the reaction ID for a single reaction
+
+  Parameters
+  ----------
+  reaction : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a
+    reaction to a post.
+
+  Returns
+  -------
+  int
+    ID of reaction
+    e.g. ``7`` (corresponds to ``'Feels'`` reaction)
+  """
+
+  return int( reaction.find(
+    'div',
+    { 'class' : 'contentRow-extra' } ).find( 'span' )[ 'data-reaction-id' ] )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_reaction_name( reaction ):
+
+  """Extract the reaction ID for a single reaction
+
+  Parameters
+  ----------
+  reaction : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a
+    reaction to a post.
+
+  Returns
+  -------
+  int
+    ID of reaction
+    e.g. ``'Feels'`` (corresponds to reaction ID ``7``)
+  """
+
+  return reaction.find(
+    'div',
+    { 'class' : 'contentRow-extra' } ).find( 'span' ).find( 'img' )[ 'alt' ]
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_reaction_timestamp( reaction ):
+
+  """Extract reaction timestamp from BeautifulSoup of HTML snippet
+  containing reaction information.
+
+  Parameters
+  ----------
+  reaction : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins reaction information
+
+  Returns
+  -------
+  int
+    Timestamp of reaction
+    e.g. ``1515211698``
+
+  """
+
+  return reaction.find( 'time' )[ 'data-time' ]
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
