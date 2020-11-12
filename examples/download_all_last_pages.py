@@ -18,9 +18,9 @@ from aiohttp import ClientSession
 
 ###############################################################################
 
-OUTPUT_DIR = '../../data_fresh/downloaded_threads_20'
+OUTPUT_DIR = 'downloaded_pages'
 
-URL_LIST_FILE = '../../data_fresh/url_list.txt'
+URL_LIST_FILE = 'all_page_urls.txt'
 
 ###############################################################################
 
@@ -38,7 +38,7 @@ async def make_request(session, url, sem):
 
 async def main():
 
-  sem = asyncio.Semaphore( 20 )
+  sem = asyncio.Semaphore( 10 )
 
   async with ClientSession() as session:
     coros = [ make_request( session, url, sem ) for url in urls ]

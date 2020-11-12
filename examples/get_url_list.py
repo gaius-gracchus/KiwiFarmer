@@ -14,23 +14,27 @@ from kiwifarmer import base, templates
 
 ###############################################################################
 
-OUTPUT_DIR = 'downloaded'
+OUTPUT_DIR = '../../data_fresh'
 SITEMAP_URL = 'https://kiwifarms.net/sitemap.xml'
 
 if __name__ == '__main__':
 
   os.makedirs( OUTPUT_DIR, exist_ok = True )
 
-  os.system( f'wget {SITEMAP_URL}')
+  output_sitemap = os.path.join( OUTPUT_DIR, 'sitemap.xml' )
 
-  with open( 'sitemap.xml', 'r' ) as f:
+  os.system( f'wget {SITEMAP_URL} -O {output_sitemap}')
+
+  with open( output_sitemap, 'r' ) as f:
     soup = BeautifulSoup( f.read( ), 'xml' )
 
   urls = soup.find_all('url')
   urls = [ url.find('loc').text for url in urls ]
   urls = [ url for url in urls if url.startswith( 'https://kiwifarms.net/threads/' ) ]
 
-  with open( 'url_list.txt', 'w' ) as f:
+  output_url_list = os.path.join( OUTPUT_DIR, 'url_list.txt' )
+
+  with open( output_url_list, 'w' ) as f:
     for url in urls:
       f.write( url + '\n' )
 

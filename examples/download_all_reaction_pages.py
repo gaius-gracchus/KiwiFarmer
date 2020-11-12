@@ -18,7 +18,7 @@ from aiohttp import ClientSession
 
 ###############################################################################
 
-OUTPUT_DIR = 'downloaded_reaction_pages'
+OUTPUT_DIR = '../../data/downloaded_reaction_pages'
 
 # LAST_POST_ID = 7738473
 LAST_POST_ID = 1000
