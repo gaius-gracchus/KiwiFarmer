@@ -17,6 +17,10 @@ from kiwifarmer import base, templates
 OUTPUT_DIR = '../../data_fresh'
 SITEMAP_URL = 'https://kiwifarms.net/sitemap.xml'
 
+THREAD_LIST_FILENAME = 'thread_url_list.txt'
+
+###############################################################################
+
 if __name__ == '__main__':
 
   os.makedirs( OUTPUT_DIR, exist_ok = True )
@@ -32,7 +36,7 @@ if __name__ == '__main__':
   urls = [ url.find('loc').text for url in urls ]
   urls = [ url for url in urls if url.startswith( 'https://kiwifarms.net/threads/' ) ]
 
-  output_url_list = os.path.join( OUTPUT_DIR, 'url_list.txt' )
+  output_url_list = os.path.join( OUTPUT_DIR, THREAD_LIST_FILENAME )
 
   with open( output_url_list, 'w' ) as f:
     for url in urls:

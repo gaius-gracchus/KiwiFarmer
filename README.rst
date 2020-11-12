@@ -16,8 +16,11 @@ TODO
 
 Steps
 -----
-1. Get list of all threads
-  `python get_url_list.py`
+1. Get list of URLs for all threads
+  `python get_thread_url_list.py`
 
-2. Download the first page of each thread
-  `python download_all_threads.py`
+2. Download the first page of each thread (run until all threads download successfully)
+  `python download_all_threads_new.py`
+
+3. Get list of URLs for all pages of all threads
+  `python get_page_url_list.py`

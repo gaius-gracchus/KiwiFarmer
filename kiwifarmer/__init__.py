@@ -8,5 +8,6 @@
 from . import base
 from . import functions
 from . import templates
+from . import utils
 
 ###############################################################################

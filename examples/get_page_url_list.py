@@ -18,9 +18,11 @@ from kiwifarmer import functions
 
 ###############################################################################
 
-INPUT_DIR = 'downloaded'
+INPUT_DIR = '../../data_fresh/downloaded_threads/downloaded_threads_20'
 
-OUTPUT_DIR = 'downloaded_pages'
+OUTPUT_DIR = '../../data_fresh'
+
+PAGE_LIST_FILENAME = 'page_url_list.txt'
 
 ###############################################################################
 
@@ -42,7 +44,9 @@ for file in files:
 
   all_pages.extend( pages )
 
-with open( 'all_page_urls.txt', 'w' ) as f:
+output_url_list = os.path.join( OUTPUT_DIR, PAGE_LIST_FILENAME )
+
+with open( output_url_list, 'w' ) as f:
   for page in all_pages:
     f.write( page + '\n' )
 
