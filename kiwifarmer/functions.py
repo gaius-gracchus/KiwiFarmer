@@ -224,6 +224,8 @@ def get_post_thread_id( post ):
 
   return post.find('a', {'class':"u-concealed"})['href'].split('/')[-2].split('.')[-1]
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
 def get_post_id( post ):
 
   """Extract post ID from post BeautifulSoup object.
