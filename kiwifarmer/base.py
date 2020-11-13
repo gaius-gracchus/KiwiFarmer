@@ -36,7 +36,7 @@ class Thread:
       self.soup = input
 
       # get thread url from soup
-      self.thread_url = self.soup.find('link')['href']
+      self.thread_url = self.soup.find('link', {'rel' : 'canonical'})['href']
 
     elif input_type is 'url':
 

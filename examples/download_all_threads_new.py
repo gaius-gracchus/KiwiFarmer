@@ -13,9 +13,9 @@ from kiwifarmer.utils import download_many_files
 
 URL_LIST_FILE = '../../data_fresh/thread_url_list.txt'
 
-OUTPUT_DIR = '../../data_fresh/downloaded_threads/downloaded_threads_20'
+OUTPUT_DIR = '../../data_fresh/downloaded_threads/'
 
-SEMAPHORE = 10
+SEMAPHORE = 20
 
 THRESHOLD_KB = 40
 

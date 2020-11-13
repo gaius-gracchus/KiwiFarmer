@@ -222,7 +222,7 @@ def get_post_thread_id( post ):
 
   """
 
-  return post.find('a', {'class':"u-concealed"})['href'].split('/')[-2].split('.')[-1]
+  return post.find('a', {'rel':"nofollow"})[ 'href' ].split('/')[-2].split('.')[-1]
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
