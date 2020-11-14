@@ -340,7 +340,11 @@ def get_post_url( post ):
 
   """
 
-  return post.find( 'a', { 'rel' : 'nofollow' } )[ 'href' ]
+  url = post.find( 'a', { 'rel' : 'nofollow' } )[ 'href' ]
+
+  url = 'https://kiwifarms.net' + url
+
+  return url
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
