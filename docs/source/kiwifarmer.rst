@@ -11,7 +11,9 @@ Submodules
 ----------
 
 .. toctree::
+   :maxdepth: 4
 
    kiwifarmer.base
    kiwifarmer.functions
    kiwifarmer.templates
+   kiwifarmer.utils

@@ -1,7 +1,11 @@
 # -*- coding: UTF-8 -*-
 
+###############################################################################
+
 import os.path
 from setuptools import setup
+
+###############################################################################
 
 def readme( ):
 
@@ -11,6 +15,8 @@ def readme( ):
       'README.rst' ) ) ) as f:
 
     return f.read( )
+
+###############################################################################
 
 setup(
   name = 'kiwifarmer',
@@ -23,14 +29,16 @@ setup(
   test_suite = 'tests.test_suite',
   dependency_links = [ ],
   install_requires = [
-    'requests >= 2.20',
-    'beautifulsoup4 >= 4.8.1',
-    'mysql-connector-python >= 8.0.19' ],
+    'requests >= 2.23.0',
+    'beautifulsoup4 >= 4.8.2',
+    'mysql-connector-python >= 8.0.19',
+    'aiohttp >= 3.6.2',
+    'aiofiles >= 0.4.0' ],
   extras_require = {
     'docs': [
-      'sphinx >= 2.1',
-      'sphinx_rtd_theme >= 0.4',
-      'aiohttp >= 3.6.2',
-      'aiofiles >= 0.4.0' ] },
+      'sphinx >= 3.3.0',
+      'sphinx_rtd_theme >= 0.5', ] },
   include_package_data = True,
   zip_safe = False )
+
+###############################################################################

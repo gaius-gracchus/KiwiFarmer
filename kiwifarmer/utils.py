@@ -61,6 +61,25 @@ def filename_to_url( filename ):
 
 async def make_request( session, url, sem, output_dir ):
 
+  """Asynchronous function to download a single URL and save the resulting HTML file in a specified output directory.
+
+  Parameters
+  ----------
+  session : aiohttp.ClientSession( )
+    Interface for making multiple requests
+  url : str
+    URL to download
+  sem : asyncio.Semaphore
+    Semaphore used for asynchronous requests
+  output_dir : str
+    Directory to save HTML files to
+
+  Returns
+  -------
+  str :
+    Filename of HTML file that was saved.
+  """
+
   async with sem:
     response = await session.request( method = "GET", url = url )
     filename = os.path.join( output_dir, url_to_filename( url ) )

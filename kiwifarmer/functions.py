@@ -190,7 +190,7 @@ def get_page_thread_id( page_url ):
   ----------
   page_url : str
     URL of thread page
-    e.g. 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/page-2/'
+    e.g. ``'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/page-2/'``
 
   Returns
   -------
@@ -421,7 +421,7 @@ def get_post_blockquotes( message ):
   -------
   tuple
     Tuple containing two elements: list of blockquotes contained in the forum post, and the corresponding sources of the blockquotes.
-    An example source is '#post-2927009', indicating that the post in question quoted the post with port ID '2927009'.
+    An example source is ``'#post-2927009'``, indicating that the post in question quoted the post with port ID ``'2927009'``.
 
   """
 
