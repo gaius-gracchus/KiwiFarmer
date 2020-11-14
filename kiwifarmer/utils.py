@@ -13,9 +13,9 @@ from aiohttp import ClientSession
 
 ###############################################################################
 
-def url_to_filename( url ):
+def page_url_to_filename( url ):
 
-  """Convert a KiwiFarms url to a unique, valid HTML file name.
+  """Convert a KiwiFarms page url to a unique, valid HTML file name.
 
   Parameters
   ----------
@@ -35,7 +35,7 @@ def url_to_filename( url ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def filename_to_url( filename ):
+def page_filename_to_url( filename ):
 
   """Convert the unique valid HTML filename (basename; doesn't include
   directory) to its corresponding KiwiFarms url.
@@ -57,11 +57,73 @@ def filename_to_url( filename ):
 
   return url
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def reaction_url_to_filename( url ):
+
+  """Convert a KiwiFarms post reaction url to a unique, valid HTML file name.
+
+  Parameters
+  ----------
+  url : str
+    URL of a Kiwifarms forum post reaction list
+    e.g. ``'https://kiwifarms.net/posts/1234/reactions?reaction_id=0&list_only=1&page=1'``
+
+  Returns
+  -------
+  str
+    e.g. ``'1234_page-1.html'``
+  """
+
+  s = url.split( '/' )
+
+  post_id = s[ 4 ]
+  page = s[ -1 ].split( '=' )[ -1 ]
+
+  filename = f'{post_id}_page-{page}.html'
+
+  return filename
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def reaction_filename_to_url( filename ):
+
+  """Convert the unique valid HTML filename (basename; doesn't include
+  directory) to its corresponding KiwiFarms url.
+
+  Parameters
+  ----------
+  filename : str
+    unique filename of a Kiwifarms post reaction list
+    e.g. ``'1234_page-1.html'``
+
+  Returns
+  -------
+  str
+    e.g. ``'https://kiwifarms.net/posts/1234/reactions?reaction_id=0&list_only=1&page=1'``
+
+  """
+
+  s = filename.split( '_' )
+
+  post_id = s[ 0 ]
+  page = s[ -1 ][ 5 : -5 ]
+
+  url = f'https://kiwifarms.net/posts/{post_id}/reactions?reaction_id=0&list_only=1&page={page}'
+
+  return url
+
 ###############################################################################
 
-async def make_request( session, url, sem, output_dir ):
+async def make_request(
+  session,
+  url,
+  sem,
+  output_dir,
+  url_to_filename ):
 
-  """Asynchronous function to download a single URL and save the resulting HTML file in a specified output directory.
+  """Asynchronous function to download a single URL and save the resulting HTML
+  file in a specified output directory.
 
   Parameters
   ----------
@@ -73,11 +135,14 @@ async def make_request( session, url, sem, output_dir ):
     Semaphore used for asynchronous requests
   output_dir : str
     Directory to save HTML files to
+  url_to_filename : callable
+    Function to convert a URL to an HTML filename
 
   Returns
   -------
   str :
     Filename of HTML file that was saved.
+
   """
 
   async with sem:
@@ -90,7 +155,13 @@ async def make_request( session, url, sem, output_dir ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-async def download_many_files( url_list, output_dir, semaphore, threshold_kb ):
+async def download_many_files(
+  url_list,
+  output_dir,
+  semaphore,
+  threshold_kb,
+  url_to_filename,
+  filename_to_url ):
 
   """Asynchronous function to download, in parallel, a list of URLs, and save
   the resulting HTML files in a specified output directory.
@@ -105,6 +176,10 @@ async def download_many_files( url_list, output_dir, semaphore, threshold_kb ):
     Maximum number of active parallel connections
   threshold_kb : int
     Files below this size are assumed to have failed
+  url_to_filename : callable
+    Function to convert a URL to an HTML filename
+  filename_to_url : callable
+    Function to convert an HTML filename to a URL
 
   """
 
@@ -131,7 +206,7 @@ async def download_many_files( url_list, output_dir, semaphore, threshold_kb ):
   #---------------------------------------------------------------------------#
 
   async with ClientSession() as session:
-    coros = [ make_request( session, url, sem, output_dir ) for url in urls_to_download ]
+    coros = [ make_request( session, url, sem, output_dir, url_to_filename ) for url in urls_to_download ]
     result_files = await asyncio.gather( *coros )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#

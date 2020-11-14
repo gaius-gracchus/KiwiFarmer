@@ -7,7 +7,10 @@
 
 import asyncio
 
-from kiwifarmer.utils import download_many_files
+from kiwifarmer.utils import (
+  page_filename_to_url,
+  page_url_to_filename,
+  download_many_files, )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
@@ -28,6 +31,8 @@ asyncio.run( download_many_files(
   url_list = url_list,
   output_dir = OUTPUT_DIR,
   semaphore = SEMAPHORE,
-  threshold_kb = THRESHOLD_KB, ) )
+  threshold_kb = THRESHOLD_KB,
+  filename_to_url = page_filename_to_url,
+  url_to_filename = page_url_to_filename ) )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
