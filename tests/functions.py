@@ -45,47 +45,26 @@ class BaseTest( unittest.TestCase ):
 
     #.........................................................................#
 
-    self.function_list = [
-      'get_thread_id',
-      'get_thread_title',
-      'get_thread_last_page',
-      'get_thread_creation',
-      'get_thread_creator_username',
-      'get_thread_creator_user_id',
-      'get_thread_timestamp',
-      'get_page_thread_id',
-      'get_post_thread_id',
-      'get_post_id',
-      'get_post_author_username',
-      'get_post_author_user_id',
-      'get_post_timestamp',
-      'get_post_url',
-      'get_post_message',
-      'get_post_links',
-      'get_post_blockquotes',
-      'get_post_images',
-      'process_text' ]
-
-    self.kwarg_list = [
-      { 'thread_url' : self.thread_url },
-      { 'soup' : self.soup },
-      { 'soup' : self.soup },
-      { 'soup' : self.soup },
-      { 'creation' : self.creation },
-      { 'creation' : self.creation },
-      { 'creation' : self.creation },
-      { 'page_url' : self.page_url },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'post' : self.post },
-      { 'message' : self.message },
-      { 'message' : self.message },
-      { 'message' : self.message },
-      { 'text' : self.thread_url } ]
+    self.function_dict = {
+      'get_thread_id' : { 'thread_url' : self.thread_url },
+      'get_thread_title' : { 'soup' : self.soup },
+      'get_thread_last_page' : { 'soup' : self.soup },
+      'get_thread_creation' : { 'soup' : self.soup },
+      'get_thread_creator_username' : { 'creation' : self.creation },
+      'get_thread_creator_user_id' : { 'creation' : self.creation },
+      'get_thread_timestamp' : { 'creation' : self.creation },
+      'get_page_thread_id' : { 'page_url' : self.page_url },
+      'get_post_thread_id' : { 'post' : self.post },
+      'get_post_id' : { 'post' : self.post },
+      'get_post_author_username' : { 'post' : self.post },
+      'get_post_author_user_id' : { 'post' : self.post },
+      'get_post_timestamp' : { 'post' : self.post },
+      'get_post_url' : { 'post' : self.post },
+      'get_post_message' : { 'post' : self.post },
+      'get_post_links' : { 'message' : self.message },
+      'get_post_blockquotes' : { 'message' : self.message },
+      'get_post_images' : { 'message' : self.message },
+      'process_text' : { 'text' : self.thread_url } }
 
   #---------------------------------------------------------------------------#
 
@@ -97,7 +76,7 @@ class MinimalInitTest( BaseTest ):
 
   def test( self ):
 
-    for function_str, kwargs in zip( self.function_list, self.kwarg_list ):
+    for function_str, kwargs in self.function_dict.items( ):
 
       function = eval( 'functions.' + function_str )
 
