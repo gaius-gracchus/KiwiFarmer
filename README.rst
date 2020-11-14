@@ -2,13 +2,21 @@
 KiwiFarmer
 ==========
 
-Scraping KiwiFarms threads and storing in a created MySQL database.
+KiwiFarmer is a Python package for scraping KiwiFarms threads and posts, extracting field values, and storing the results in a created MySQL database.
 
 TODO
 ----
 
-* write unit tests
-* parallelize requests (possibly aiohttp)
+* expand unit tests
+  * verify correctness of functions
+  * test classes
+  * test utils
+  * auto-download resources instead of storing them
+  * use pytest instead of unittest
+  * add function tests for new functions (e.g. reactions)
+* simplify quickstart guide in docs
+* expand instructions and info of docs
+* make sick logo/favicon
 * config file parsing
 * analysis tools/utilities/visualizations
 * use mysqlclient for improved performance
@@ -25,5 +33,5 @@ Steps
 3. Get list of URLs for all pages of all threads
   `python get_page_url_list.py`
 
-4. Download all pages of all threads (rerun until all threads download successfully)
+4. Download all pages of all threads (rerun until all pages download successfully)
   `python download_all_pages_new.py`

@@ -184,7 +184,7 @@ class Post:
     # extract blockquotes and blockquotes sources from message
     blockquotes_text, blockquotes_sources = functions.get_post_blockquotes( message = message )
     # extract link URLs from message
-    links = functions.get_post_links( message = message )
+    links, links_texts = functions.get_post_links( message = message )
     # extract image URLs from message
     images = functions.get_post_images( message = message )
 
@@ -204,12 +204,15 @@ class Post:
     self.post_author_user_id = functions.get_post_author_user_id( post = self.post )
     # store post timestamp as class variable
     self.post_timestamp = functions.get_post_timestamp( post = self.post )
+    # store post url as class variable
+    self.post_url = functions.get_post_url( post = self.post )
 
     # save all post fields in a single dictionary, used for insertion into
     # MySQL database
     self.post_insertion = {
       'thread_id' : self.thread_id,
       'post_id' : self.post_id,
+      'post_url' : self.post_url,
       'author_username' : self.post_author_username,
       'author_user_id' : self.post_author_user_id,
       'post_timestamp' : self.post_timestamp,
@@ -245,7 +248,7 @@ class Post:
     _link_insertions = [ ]
 
     # loop over all links
-    for link in links:
+    for link, link_text in zip( links, links_texts ):
 
       if len( link ) <= 2048:
 
@@ -254,7 +257,8 @@ class Post:
           'thread_id' : self.thread_id,
           'post_id' : self.post_id,
           'author_user_id' : self.post_author_user_id,
-          'link_source' : link }
+          'link_source' : link,
+          'link_text' : link_text }
 
         # append the link insertion dict to the list of dicts
         _link_insertions.append( _d )

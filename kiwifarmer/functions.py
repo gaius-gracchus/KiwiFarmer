@@ -322,6 +322,28 @@ def get_post_timestamp( post ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
+def get_post_url( post ):
+
+  """Extract post url from post BeautifulSoup object.
+
+  Parameters
+  ----------
+  post : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a post
+    in the thread
+
+  Returns
+  -------
+  url
+    URL of post
+    e.g. ``'https://kiwifarms.net/threads/john-cameron-denton-atomwaffen-division-siegeculture.38120/post-2924919'``
+
+  """
+
+  return post.find( 'a', { 'rel' : 'nofollow' } )[ 'href' ]
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
 def get_post_message( post ):
 
   """Extract snippet of HTML that contains message information
@@ -340,7 +362,13 @@ def get_post_message( post ):
 
   """
 
-  return post.find('article', {'class' : 'message-body'})
+  message = post.find('article', {'class' : 'message-body js-selectToQuote'})
+
+  scripts = message.find_all( 'script' )
+  for script in scripts:
+    script.decompose()
+
+  return message
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
@@ -365,13 +393,16 @@ def get_post_links( message ):
   links = message.find_all( 'a', {'class' : 'link'})
 
   # create a list of links from all hyperlinks
-  links_href = [ str( link['href'] ) for link in links ]
+  links_hrefs = [ str( link['href'] ) for link in links ]
+
+  # create a list of link text from all hyperlinks
+  links_texts = [ str( link.text ) for link in links ]
 
   # loop over all hyperlinks and remove them from the `message` object
   for l in links:
     l.decompose()
 
-  return links_href
+  return links_hrefs, links_texts
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
@@ -395,10 +426,10 @@ def get_post_blockquotes( message ):
   """
 
   # find all blockquote tags in `message`
-  blockquotes = message.find_all('blockquote', {'class' : "bbCodeBlock bbCodeBlock--expandable bbCodeBlock--quote"})
+  blockquotes = message.find_all('blockquote', {'class' : "bbCodeBlock bbCodeBlock--expandable bbCodeBlock--quote js-expandWatch"})
 
   # extract text for all blockquotes
-  blockquotes_text = [ str( blockquote.find('div', {'class' : "bbCodeBlock-expandContent"}).text ) for blockquote in blockquotes ]
+  blockquotes_text = [ str( blockquote.find('div', {'class' : "bbCodeBlock-expandContent js-expandContent"}).text ) for blockquote in blockquotes ]
 
   # initialize list of blockquote sources
   blockquotes_sources = [ ]
@@ -437,8 +468,8 @@ def get_post_images( message ):
   """
 
   # find all image tags in `message`
-  images = message.find_all('div', {'class' : "lbContainer lbContainer--inline"})
-  image_urls = [ str( image.find('img', {'class' : 'bbImage'})['data-url'] ) for image in images]
+  images = message.find_all('div', {'class' : "bbImageWrapper js-lbImage"})
+  image_urls = [ str( image.find('img', {'class' : 'bbImage'})['src'] ) for image in images]
 
   # loop over all images and remove them from the `message` object
   for image in images:

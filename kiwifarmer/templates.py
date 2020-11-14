@@ -59,6 +59,7 @@ TABLES = {
     "CREATE TABLE `posts` ("
     "  `thread_id` int NOT NULL,"
     "  `post_id` int NOT NULL,"
+    "  `post_url` varchar(1024) NOT NULL,"
     "  `author_username` varchar(128),"
     "  `author_user_id` mediumint,"
     "  `post_timestamp` int NOT NULL,"
@@ -78,6 +79,7 @@ TABLES = {
     "  `post_id` int NOT NULL,"
     "  `author_user_id` mediumint,"
     "  `link_source` varchar(2048) NOT NULL"
+    "  `link_text` mediumtext"
     ") ENGINE=InnoDB"),
   'images' : (
     "CREATE TABLE `images` ("
