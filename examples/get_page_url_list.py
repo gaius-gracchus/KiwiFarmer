@@ -18,7 +18,7 @@ from kiwifarmer import functions
 
 ###############################################################################
 
-INPUT_DIR = '../../data_fresh/downloaded_threads/downloaded_threads_20'
+INPUT_DIR = '../../data_fresh/downloaded_threads/'
 
 OUTPUT_DIR = '../../data_fresh'
 
