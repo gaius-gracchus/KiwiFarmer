@@ -548,7 +548,7 @@ def get_reaction_list( soup ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def get_reaction_author_name( reaction ):
+def get_reaction_author_username( reaction ):
 
   """Extract the reactor username for a single reaction
 
@@ -575,7 +575,7 @@ def get_reaction_author_name( reaction ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def get_reaction_author_id( reaction ):
+def get_reaction_author_user_id( reaction ):
 
   """Extract the reactor user ID for a single reaction
 
@@ -664,6 +664,6 @@ def get_reaction_timestamp( reaction ):
 
   """
 
-  return reaction.find( 'time' )[ 'data-time' ]
+  return int( reaction.find( 'time' )[ 'data-time' ] )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#

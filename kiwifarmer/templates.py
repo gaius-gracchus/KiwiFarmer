@@ -20,14 +20,14 @@ ADD_POST = (
 # template for inserting blockquote insertion dict into MySQL database
 ADD_BLOCKQUOTE = (
   "INSERT INTO blockquotes "
-  "(thread_id, post_id, author_user_id, blockquote_text, blockquote_source) "
-  "VALUES (%(thread_id)s, %(post_id)s, %(author_user_id)s, %(blockquote_text)s, %(blockquote_source)s)")
+  "(thread_id, post_id, post_url, author_user_id, blockquote_text, blockquote_source) "
+  "VALUES (%(thread_id)s, %(post_id)s, %(post_url)s, %(author_user_id)s, %(blockquote_text)s, %(blockquote_source)s)")
 
 # template for inserting link insertion dict into MySQL database
 ADD_LINK = (
   "INSERT INTO links "
-  "(thread_id, post_id, author_user_id, link_source) "
-  "VALUES (%(thread_id)s, %(post_id)s, %(author_user_id)s, %(link_source)s)")
+  "(thread_id, post_id, author_user_id, link_source, link_text) "
+  "VALUES (%(thread_id)s, %(post_id)s, %(author_user_id)s, %(link_source)s, %(link_text)s)")
 
 # template for inserting image insertion dict into MySQL database
 ADD_IMAGE = (
@@ -38,8 +38,8 @@ ADD_IMAGE = (
 # template for inserting reaction insertion dict into MySQL database
 ADD_REACTION = (
   "INSERT INTO reactions "
-  "(thread_id, post_id, author_username, author_user_id, reaction) "
-  "VALUES (%(thread_id)s, %(post_id)s, %(author_username)s, %(author_user_id)s, %(reaction)s)")
+  "(post_id, author_username, author_user_id, reaction_id, reaction_name, reaction_timestamp) "
+  "VALUES (%(post_id)s, %(author_username)s, %(author_user_id)s, %(reaction_id)s, %(reaction_name)s, %(reaction_timestamp)s)")
 
 ###############################################################################
 
@@ -90,11 +90,12 @@ TABLES = {
     ") ENGINE=InnoDB"),
   'reactions' : (
     "CREATE TABLE `reactions` ("
-    "  `thread_id` int NOT NULL,"
     "  `post_id` int NOT NULL,"
     "  `author_username` varchar(128),"
     "  `author_user_id` mediumint,"
-    "  `reaction` varchar(16) NOT NULL"
+    "  `reaction_id` tinyint"
+    "  `reaction_name` varchar(16) NOT NULL"
+    "  `reaction_timestamp` int NOT NULL,"
     ") ENGINE=InnoDB") }
 
 ###############################################################################

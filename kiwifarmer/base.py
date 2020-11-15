@@ -111,7 +111,7 @@ class Page:
 
   #---------------------------------------------------------------------------#
 
-  def __init__(self,
+  def __init__( self,
     input,
     input_type = 'soup' ):
 
@@ -134,7 +134,8 @@ class Page:
 
     else:
 
-      msg = '`input_type` must be in `{"soup", "url"}`, and `input` must either be an instance of `bs4.element.Tag`, or `str`, respectively.'
+      msg = '`input_type` must be in `{"soup", "url"}`, and `input` must \
+        either be an instance of `bs4.element.Tag`, or `str`, respectively.'
 
   #---------------------------------------------------------------------------#
 
@@ -291,6 +292,101 @@ class Post:
     self.image_insertions = _image_insertions
 
     #.........................................................................#
+
+  #---------------------------------------------------------------------------#
+
+###############################################################################
+
+class ReactionPage:
+
+  """Class for initializing the scrape of all reactions to a KwiFarms post.
+
+  Parameters
+  ----------
+  soup : bs4.element.Tag
+    BeautifulSoup HTML document of entire reaction page
+
+  """
+
+  #---------------------------------------------------------------------------#
+
+  def __init__( self,
+    soup ):
+
+    # store parsable BeautifulSoup object as class variable
+    self.soup = soup
+
+    url = soup.find( 'meta', {'property' : 'og:url' } )[ 'content' ]
+    self.post_id = int( url.split( '/' )[ 4 ] )
+
+  #---------------------------------------------------------------------------#
+
+  def get_reaction_soups( self ):
+
+    """Generate a list of BeautifulSoup HTML snippets that each contain a
+    KiwiFarms reaction.
+
+    Returns
+    -------
+    list:
+      List of BeautifulSoup HTML snippets that each contain a KiwiFarms reaction.
+
+    """
+
+    return functions.get_reaction_list( soup = self.soup )
+
+  #---------------------------------------------------------------------------#
+
+###############################################################################
+
+class Reaction:
+
+  """Class for initializing the scrape of a single reaction to a KwiFarms post.
+
+  Parameters
+  ----------
+  reaction_soup : bs4.element.Tag
+    BeautifulSoup HTML snippet that contains a single KiwiFarms reaction
+  post_id : int
+    Unique post ID number of the post the reaction is to.
+
+  """
+
+  #---------------------------------------------------------------------------#
+
+  def __init__( self,
+    reaction_soup,
+    post_id ):
+
+    # store BeautifulSoup HTML snippet as class variable
+    self.reaction = reaction_soup
+
+    # store post ID as class variable, since it's not available in the
+    # individual reaction and needs to be passed from the ReactionPage class
+    self.post_id = post_id
+
+    # store reaction author name as class variable
+    self.reaction_author_username = functions.get_reaction_author_username( reaction = self.reaction )
+    # store reaction author user ID as class variable
+    self.reaction_author_user_id = functions.get_reaction_author_user_id( reaction = self.reaction )
+    # store reaction ID as class variable
+    self.reaction_id = functions.get_reaction_id( reaction = self.reaction )
+    # store reaction name as class variable
+    self.reaction_name = functions.get_reaction_name( reaction = self.reaction )
+    # store reaction author timestamp as class variable
+    self.reaction_timestamp = functions.get_reaction_timestamp( reaction = self.reaction )
+
+    #.........................................................................#
+
+    # save all reaction fields in a single dictionary, used for insertion into
+    # MySQL database
+    self.reaction_insertion = {
+      'post_id' : self.post_id,
+      'author_username' : self.reaction_author_username,
+      'author_user_id' : self.reaction_author_user_id,
+      'reaction_id' : self.reaction_id,
+      'reaction_name' : self.reaction_name,
+      'reaction_timestamp' : self.reaction_timestamp }
 
   #---------------------------------------------------------------------------#
 
