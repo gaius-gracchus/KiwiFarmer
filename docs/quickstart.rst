@@ -19,11 +19,11 @@ Running built-in tests
 ----------------------
 
 *KiwiFarmer* is instrumented with a suite of unit tests to ensure each function and class within the package produces the expected result.
-The test suite uses the unittest_ framework, and can be executed by running the following command from the *KiwiFarmer* root directory:
+The test suite uses the pytest_ framework, and can be executed by running the following command from the *KiwiFarmer* root directory:
 
 .. code-block:: bash
 
-  python setup.py test
+  python -m pytest
 
 .. _sec-quick-docs:
 
@@ -55,6 +55,6 @@ and view the front page of the newly built HTML website by opening the file ``_b
 .. _PyPi: https://pypi.org/
 .. _source code: https://github.com/gaius-gracchus/KiwiFarmer
 .. _pip: https://pip.pypa.io
-.. _unittest: https://docs.python.org/3/library/unittest.html
+.. _pytest: https://docs.pytest.org/en/latest/
 .. _Sphinx: http://www.sphinx-doc.org
 .. _reStructuredText: http://docutils.sourceforge.net/rst.html

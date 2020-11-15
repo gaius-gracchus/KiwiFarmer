@@ -6,6 +6,9 @@ examples/*
 docs/_build/
 docs/source/
 
+# Test and coverage reports
+reports
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

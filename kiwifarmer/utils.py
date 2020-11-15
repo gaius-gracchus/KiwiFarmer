@@ -149,7 +149,7 @@ async def make_request(
     response = await session.request( method = "GET", url = url )
     filename = os.path.join( output_dir, url_to_filename( url ) )
     async for data in response.content.iter_chunked( 1024 ):
-      async with aiofiles.open( filename, "ba" ) as f:
+      async with aiofiles.open( filename, "wb" ) as f:
         await f.write( data )
     return filename
 
