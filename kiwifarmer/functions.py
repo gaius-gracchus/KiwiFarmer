@@ -541,8 +541,11 @@ def get_reaction_list( soup ):
   all_reactions = soup.find(
     'ol', { 'class' : 'block-body js-reactionList-0' } )
 
-  reaction_list = all_reactions.find_all(
-    'li', { 'class' : 'block-row block-row--separated' } )
+  if all_reactions is None:
+    reaction_list = list( )
+  else:
+    reaction_list = all_reactions.find_all(
+      'li', { 'class' : 'block-row block-row--separated' } )
 
   return reaction_list
 
