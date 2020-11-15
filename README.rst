@@ -15,10 +15,6 @@ TODO
 
   * test utils
 
-  * auto-download resources instead of storing them
-
-  * use pytest instead of unittest
-
   * add function tests for new functions (e.g. reactions)
 
 * expand instructions and info of docs
