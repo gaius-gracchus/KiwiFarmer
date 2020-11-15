@@ -8,18 +8,29 @@ TODO
 ----
 
 * expand unit tests
+
   * verify correctness of functions
+
   * test classes
+
   * test utils
+
   * auto-download resources instead of storing them
+
   * use pytest instead of unittest
+
   * add function tests for new functions (e.g. reactions)
-* simplify quickstart guide in docs
+
 * expand instructions and info of docs
+
 * make sick logo/favicon
+
 * config file parsing
+
 * analysis tools/utilities/visualizations
+
 * use mysqlclient for improved performance
+
 * improve input argument handling for classes (e.g. type conversion/checking)
 
 
