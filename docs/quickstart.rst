@@ -31,11 +31,23 @@ Building the documentation
 --------------------------
 
 The documentation for *KiwiFarmer* is generated using the Sphinx_ tool, with the source files for the documentation stored as reStructuredText_ files in the ``docs`` directory.
-To build the documentation in HTML format, run the following command from the ``docs`` directory:
+To build the documentation in HTML format, run the following series of commands from the *KiwiFarmer* package root directory:
 
 .. code-block:: bash
 
-  make html
+  pip install . -I --no-deps   # install KiwiFarmer
+  cd docs                      # change directory to docs
+  rm -rf source/               # remove auto-generated documentation source code if it exists
+  bash default_apidocs.sh      # run sphinx apidoc command
+  make clean                   # remove pre-build docs if they exist
+  make html                    # build docs
+  cd ../                       # change directory back to package root directory
+
+or alternatively run the above series of commands in a single line from the *KiwiFarmer* package root directory:
+
+.. code-block:: bash
+
+  pip install . -I --no-deps && cd docs && rm -rf source/ && bash default_apidocs.sh && make clean && make html && cd ../
 
 and view the front page of the newly built HTML website by opening the file ``_build/html/index.html``.
 

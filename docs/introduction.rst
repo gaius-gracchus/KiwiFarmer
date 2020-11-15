@@ -1,5 +1,4 @@
 .. include:: alias.rst_
-.. include:: links.rst_
 
 .. _sec-intro:
 
