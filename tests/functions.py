@@ -8,14 +8,10 @@
 import os
 
 import pytest
-import requests
-from bs4 import BeautifulSoup
 
 from kiwifarmer import functions
 
 ###############################################################################
-
-THREAD_URL = 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/'
 
 KWARG_LIST = [
   ( 'get_thread_id', 'thread_url' ),
@@ -40,35 +36,11 @@ KWARG_LIST = [
 
 ###############################################################################
 
-@pytest.fixture( scope = 'module' )
-def resources( ):
-
-  """SetUp fixture to create HTML resources for evaluating extraction functions.
-  """
-
-  r = requests.get( THREAD_URL )
-
-  soup = BeautifulSoup( r.content, features = "lxml" )
-  creation = functions.get_thread_creation( soup = soup )
-  post = soup.find_all('div', {'class' : "message-inner"})[ 0 ]
-  message = functions.get_post_message( post )
-
-  resources_dict = dict( )
-
-  resources_dict[ 'soup' ] = soup
-  resources_dict[ 'creation' ] = creation
-  resources_dict[ 'post' ] = post
-  resources_dict[ 'message' ] = message
-  resources_dict[ 'thread_url' ] = THREAD_URL
-  resources_dict[ 'page_url' ] = THREAD_URL + 'page-2/'
-  resources_dict[ 'text' ] = 'this\n is a test string...'
-
-  return resources_dict
-
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
 @pytest.mark.parametrize( 'function_str,kwarg', KWARG_LIST )
 def test_minimal_init( resources, function_str, kwarg ):
+
+  with open( kwarg + '__' + function_str + '.html', 'w' ) as f:
+    f.write( str( resources[ kwarg ] ) )
 
   function = eval( 'functions.' + function_str )
   kwargs = { kwarg : resources[ kwarg ]}
