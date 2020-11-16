@@ -96,6 +96,17 @@ TABLES = {
     "  `reaction_id` tinyint"
     "  `reaction_name` varchar(16) NOT NULL"
     "  `reaction_timestamp` int NOT NULL,"
+    ") ENGINE=InnoDB"),
+  'users' : (
+    "CREATE TABLE `users` ("
+    "  `user_username` varchar(128) NOT NULL,"
+    "  `user_id` mediumint NOT NULL,"
+    "  `user_image` varchar(2048),"
+    "  `user_messages` mediumint NOT NULL,"
+    "  `user_reaction_score` mediumint NOT NULL,"
+    "  `user_points` mediumint NOT NULL,"
+    "  `user_joined` int NOT NULL,"
+    "  `user_last_seen` int,"
     ") ENGINE=InnoDB") }
 
 ###############################################################################
