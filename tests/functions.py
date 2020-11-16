@@ -32,15 +32,18 @@ KWARG_LIST = [
   ( 'get_post_links', 'message' ),
   ( 'get_post_blockquotes', 'message' ),
   ( 'get_post_images', 'message' ),
-  ( 'process_text', 'text' ) ]
+  ( 'process_text', 'text' ),
+  ( 'get_reaction_list', 'reaction_page' ),
+  ( 'get_reaction_author_username', 'reaction' ),
+  ( 'get_reaction_author_user_id', 'reaction' ),
+  ( 'get_reaction_id', 'reaction' ),
+  ( 'get_reaction_name', 'reaction' ),
+  ( 'get_reaction_timestamp', 'reaction' ), ]
 
 ###############################################################################
 
 @pytest.mark.parametrize( 'function_str,kwarg', KWARG_LIST )
 def test_minimal_init( resources, function_str, kwarg ):
-
-  with open( kwarg + '__' + function_str + '.html', 'w' ) as f:
-    f.write( str( resources[ kwarg ] ) )
 
   function = eval( 'functions.' + function_str )
   kwargs = { kwarg : resources[ kwarg ]}

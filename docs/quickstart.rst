@@ -13,6 +13,18 @@ Installation
 
   pip install .
 
+To install the optional dependencies required to build the documentation for *KiwiFarmer*,  run the following command from the *KiwiFarmer* package root directory:
+
+.. code-block:: bash
+
+  pip install .[docs]
+
+To install the optional dependencies required to run the test suite for *KiwiFarmer*,  run the following command from the *KiwiFarmer* package root directory:
+
+.. code-block:: bash
+
+  pip install .[tests]
+
 .. _sec-quick-tests:
 
 Running built-in tests
@@ -38,8 +50,8 @@ To build the documentation in HTML format, run the following series of commands 
   pip install . -I --no-deps   # install KiwiFarmer
   cd docs                      # change directory to docs
   rm -rf source/               # remove auto-generated documentation source code if it exists
-  bash default_apidocs.sh      # run sphinx apidoc command
-  make clean                   # remove pre-build docs if they exist
+  bash default_apidocs.sh      # run sphinx-apidoc command
+  make clean                   # remove pre-built docs if they exist
   make html                    # build docs
   cd ../                       # change directory back to package root directory
 
@@ -49,7 +61,7 @@ or alternatively run the above series of commands in a single line from the *Kiw
 
   pip install . -I --no-deps && cd docs && rm -rf source/ && bash default_apidocs.sh && make clean && make html && cd ../
 
-and view the front page of the newly built HTML website by opening the file ``_build/html/index.html``.
+and view the front page of the newly built HTML website by opening the file ``docs/_build/html/index.html``.
 
 
 .. _PyPi: https://pypi.org/

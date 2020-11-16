@@ -17,6 +17,7 @@ from kiwifarmer import functions
 THREAD_URL = 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/'
 
 INPUT_SOUP = 'tests/resources/soup.html'
+INPUT_REACTION = 'tests/resources/reaction.html'
 
 ###############################################################################
 
@@ -29,11 +30,13 @@ def resources( ):
   with open( INPUT_SOUP, 'r' ) as f:
     soup = BeautifulSoup( f.read( ), features = 'lxml' )
 
+  with open( INPUT_REACTION, 'r' ) as f:
+    reaction_page = BeautifulSoup( f.read( ), features = 'lxml' )
+
   creation = functions.get_thread_creation( soup = soup )
   post = soup.find_all('div', {'class' : "message-inner"})[ 0 ]
-  # print( 'POST IN FIXTURE', post)
-
   message = functions.get_post_message( post )
+  reaction = functions.get_reaction_list( reaction_page )[ 0 ]
 
   resources_dict = dict( )
 
@@ -44,6 +47,8 @@ def resources( ):
   resources_dict[ 'thread_url' ] = THREAD_URL
   resources_dict[ 'page_url' ] = THREAD_URL + 'page-2/'
   resources_dict[ 'text' ] = 'this\n is a test string...'
+  resources_dict[ 'reaction_page' ] = reaction_page
+  resources_dict[ 'reaction' ] = reaction
 
   return resources_dict
 

@@ -520,14 +520,14 @@ def process_text( text ):
 # Reaction field extraction functions
 ###############################################################################
 
-def get_reaction_list( soup ):
+def get_reaction_list( reaction_page ):
 
   """Extract list of reactions from the raw HTML of the reaction page
   BeautifulSoup object.
 
   Parameters
   ----------
-  soup : bs4.element.Tag
+  reaction_page : bs4.element.Tag
     BeautifulSoup object containing parsable representation of HTML for first
     page of reaction
 
@@ -538,7 +538,7 @@ def get_reaction_list( soup ):
 
   """
 
-  all_reactions = soup.find(
+  all_reactions = reaction_page.find(
     'ol', { 'class' : 'block-body js-reactionList-0' } )
 
   if all_reactions is None:

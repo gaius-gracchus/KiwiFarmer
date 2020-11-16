@@ -7,11 +7,11 @@ KiwiFarmer is a Python package for scraping KiwiFarms threads and posts, extract
 TODO
 ----
 
+* make function and class input keyword arguments make more sense and be more consistent
+
 * expand unit tests
 
   * verify correctness of functions
-
-  * test classes
 
   * test utils
 
