@@ -16,22 +16,97 @@ from the project root directory.
 import os
 
 import pytest
+import mysql.connector
+from mysql.connector import errorcode
 
 from kiwifarmer import (
   base,
-  functions, )
+  functions,
+  templates, )
 
 ###############################################################################
 
-def test_Thread( resources ):
+@pytest.fixture( scope = 'module' )
+def mysql_connection( ):
+
+  # create test database
+  #---------------------------------------------------------------------------#
+
+  cnx = mysql.connector.connect(
+    user = os.getenv( 'KIWIFARMER_USER'),
+    password = os.getenv( 'KIWIFARMER_PASSWORD' ),
+    host = '127.0.0.1',
+    use_pure = False,
+    charset = 'utf8mb4',
+    collation = 'utf8mb4_bin',
+    use_unicode = True  )
+
+  cursor = cnx.cursor()
+  cursor.execute("CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin")
+
+  cnx.commit()
+
+  cursor.close()
+  cnx.close()
+
+  # populate test database with tables based on defined templates
+  #---------------------------------------------------------------------------#
+
+  cnx = mysql.connector.connect(
+    user = os.getenv( 'KIWIFARMER_USER'),
+    password = os.getenv( 'KIWIFARMER_PASSWORD' ),
+    host = '127.0.0.1',
+    database = 'kiwifarms_test',
+    use_pure = False,
+    charset = 'utf8mb4',
+    collation = 'utf8mb4_bin',
+    use_unicode = True  )
+
+  cursor = cnx.cursor()
+
+  for table_name in templates.TABLES.keys( ):
+    table_description = templates.TABLES[table_name]
+    try:
+      cursor.execute(table_description)
+    except mysql.connector.Error as err:
+      if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+        pass
+      else:
+        print(err.msg)
+    else:
+      pass
+
+  #---------------------------------------------------------------------------#
+
+  yield cursor
+
+  # delete test database
+  #---------------------------------------------------------------------------#
+
+  cursor.execute("DROP DATABASE kiwifarms_test")
+
+  cnx.commit()
+
+  cursor.close()
+  cnx.close()
+
+  return None
+
+###############################################################################
+
+def test_Thread( resources, mysql_connection ):
 
   thread = base.Thread( input = resources[ 'soup' ] )
 
   thread_insertion = thread.thread_insertion
 
+  cursor = mysql_connection
+
+  cursor.execute(templates.ADD_THREAD, thread_insertion)
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def test_Page( resources ):
+def test_Page( resources, mysql_connection ):
 
   page = base.Page( input = resources[ 'soup' ] )
 
@@ -39,7 +114,7 @@ def test_Page( resources ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def test_Post( resources ):
+def test_Post( resources, mysql_connection ):
 
   post = base.Post( post_soup = resources[ 'post' ] )
 
@@ -48,9 +123,16 @@ def test_Post( resources ):
   link_insertions = post.link_insertions
   image_insertions = post.image_insertions
 
+  cursor = mysql_connection
+
+  cursor.execute(templates.ADD_POST, post_insertion)
+  cursor.executemany(templates.ADD_BLOCKQUOTE, blockquote_insertions)
+  cursor.executemany(templates.ADD_LINK, link_insertions)
+  cursor.executemany(templates.ADD_IMAGE, image_insertions)
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def test_ReactionPage( resources ):
+def test_ReactionPage( resources, mysql_connection ):
 
   reaction_page = base.ReactionPage( soup = resources[ 'reaction_page' ] )
 
@@ -58,20 +140,28 @@ def test_ReactionPage( resources ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def test_Reaction( resources ):
+def test_Reaction( resources, mysql_connection ):
 
   reaction = base.Reaction(
     reaction_soup = resources[ 'reaction' ], post_id = 12 )
 
   reaction_insertion = reaction.reaction_insertion
 
+  cursor = mysql_connection
+
+  cursor.execute(templates.ADD_REACTION, reaction_insertion)
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def test_User( resources ):
+def test_User( resources, mysql_connection ):
 
   user = base.User(
     user_page = resources[ 'user_page' ] )
 
   user_insertion = user.user_insertion
+
+  cursor = mysql_connection
+
+  cursor.execute(templates.ADD_USER, user_insertion)
 
 ###############################################################################

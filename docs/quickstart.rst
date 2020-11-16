@@ -37,6 +37,21 @@ The test suite uses the pytest_ framework, and can be executed by running the fo
 
   python -m pytest
 
+Before running the tests, the MySQL user must be granted permissions on the test database.
+Log in to MySQL and open a MySQL shell by executing the following command:
+
+.. code-block:: bash
+
+  mysql -u root -p
+
+wherein the user will be prompted to enter their root MySQL password. In the MySQL shell, grant privileges to the test database by executing the command:
+
+.. code-block:: MySQL
+
+  GRANT ALL PRIVILEGES ON `kiwifarms_test`.* TO USER <user>@'localhost'
+
+where ``<user>`` is the user's MySQL username.
+
 .. _sec-quick-docs:
 
 Building the documentation

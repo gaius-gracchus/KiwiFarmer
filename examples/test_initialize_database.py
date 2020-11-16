@@ -27,7 +27,7 @@ if __name__ == '__main__':
   #   use_unicode = True  )
 
   # cursor = cnx.cursor()
-  # cursor.execute("CREATE DATABASE kiwifarms character set utf8mb4 collate utf8mb4_bin")
+  # cursor.execute("CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin")
 
   # cnx.commit()
 
@@ -40,7 +40,7 @@ if __name__ == '__main__':
     user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),
     host = '127.0.0.1',
-    database = 'kiwifarms',
+    database = 'kiwifarms_test',
     use_pure = False,
     charset = 'utf8mb4',
     collation = 'utf8mb4_bin',

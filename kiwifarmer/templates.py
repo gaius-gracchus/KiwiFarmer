@@ -14,14 +14,14 @@ ADD_THREAD = (
 # template for inserting post insertion dict into MySQL database
 ADD_POST = (
   "INSERT INTO posts "
-  "(thread_id, post_id, author_username, author_user_id, post_timestamp, post_text) "
-  "VALUES (%(thread_id)s, %(post_id)s, %(author_username)s, %(author_user_id)s, %(post_timestamp)s, %(post_text)s)")
+  "(thread_id, post_id, post_url, author_username, author_user_id, post_timestamp, post_text) "
+  "VALUES (%(thread_id)s, %(post_id)s, %(post_url)s, %(author_username)s, %(author_user_id)s, %(post_timestamp)s, %(post_text)s)")
 
 # template for inserting blockquote insertion dict into MySQL database
 ADD_BLOCKQUOTE = (
   "INSERT INTO blockquotes "
-  "(thread_id, post_id, post_url, author_user_id, blockquote_text, blockquote_source) "
-  "VALUES (%(thread_id)s, %(post_id)s, %(post_url)s, %(author_user_id)s, %(blockquote_text)s, %(blockquote_source)s)")
+  "(thread_id, post_id, author_user_id, blockquote_text, blockquote_source) "
+  "VALUES (%(thread_id)s, %(post_id)s, %(author_user_id)s, %(blockquote_text)s, %(blockquote_source)s)")
 
 # template for inserting link insertion dict into MySQL database
 ADD_LINK = (
@@ -84,7 +84,7 @@ TABLES = {
     "  `thread_id` int NOT NULL,"
     "  `post_id` int NOT NULL,"
     "  `author_user_id` mediumint,"
-    "  `link_source` varchar(2048) NOT NULL"
+    "  `link_source` varchar(2048) NOT NULL,"
     "  `link_text` mediumtext"
     ") ENGINE=InnoDB"),
   'images' : (
@@ -99,9 +99,9 @@ TABLES = {
     "  `post_id` int NOT NULL,"
     "  `author_username` varchar(128),"
     "  `author_user_id` mediumint,"
-    "  `reaction_id` tinyint"
-    "  `reaction_name` varchar(16) NOT NULL"
-    "  `reaction_timestamp` int NOT NULL,"
+    "  `reaction_id` tinyint,"
+    "  `reaction_name` varchar(16) NOT NULL,"
+    "  `reaction_timestamp` int NOT NULL"
     ") ENGINE=InnoDB"),
   'users' : (
     "CREATE TABLE `users` ("
@@ -112,7 +112,7 @@ TABLES = {
     "  `user_reaction_score` mediumint NOT NULL,"
     "  `user_points` mediumint NOT NULL,"
     "  `user_joined` int NOT NULL,"
-    "  `user_last_seen` int,"
+    "  `user_last_seen` int"
     ") ENGINE=InnoDB") }
 
 ###############################################################################
