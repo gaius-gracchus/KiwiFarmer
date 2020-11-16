@@ -13,6 +13,8 @@ TODO
 
   * verify correctness of functions
 
+  * test opening and inserting into SQL tables
+
 * expand instructions and info of docs
 
 * make sick logo/favicon

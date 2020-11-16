@@ -41,6 +41,12 @@ ADD_REACTION = (
   "(post_id, author_username, author_user_id, reaction_id, reaction_name, reaction_timestamp) "
   "VALUES (%(post_id)s, %(author_username)s, %(author_user_id)s, %(reaction_id)s, %(reaction_name)s, %(reaction_timestamp)s)")
 
+# template for inserting user insertion dict into MySQL database
+ADD_USER = (
+  "INSERT INTO users "
+  "(user_username, user_id, user_image, user_messages, user_reaction_score, user_points, user_joined, user_last_seen) "
+  "VALUES (%(user_username)s, %(user_id)s, %(user_image)s, %(user_messages)s, %(user_reaction_score)s,%(user_points)s, %(user_joined)s, %(user_last_seen)s  )")
+
 ###############################################################################
 
 # dict of database tables with associated columns and types
