@@ -115,6 +115,29 @@ def reaction_filename_to_url( filename ):
 
 ###############################################################################
 
+def string_to_int( s ):
+
+  """Convert a string representation of a number to an integer
+
+  Parameters
+  ----------
+  s : bs4.element.Tag
+    BeautifulSoup representation of a number.
+    e.g. ``'21,564'``
+
+  Returns
+  -------
+  int
+    Integer representation of the number.
+    e.g. ``21564``
+
+  """
+
+  return int( s.text.strip( '\n' ).replace( ',', '' ) )
+
+
+###############################################################################
+
 async def make_request(
   session,
   url,

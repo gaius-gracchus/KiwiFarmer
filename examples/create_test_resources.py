@@ -6,6 +6,7 @@ import os
 
 import requests
 from bs4 import BeautifulSoup
+from selenium import webdriver
 
 from kiwifarmer import base, functions
 
@@ -14,6 +15,10 @@ from kiwifarmer import base, functions
 THREAD_URL = 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/'
 
 REACTION_URL = 'https://kiwifarms.net/posts/2924919/reactions?reaction_id=0&list_only=1&page=1'
+
+LOGIN_URL = 'https://kiwifarms.net/login/'
+
+USER_URL = 'https://kiwifarms.net/members/magnum-dong.9983/#about'
 
 OUTPUT_DIR = '../tests/resources'
 
@@ -29,15 +34,38 @@ if __name__ == '__main__':
   r = requests.get( REACTION_URL )
   reaction = BeautifulSoup( r.content, features = "lxml" )
 
+  r = requests.get( USER_URL )
+  user = BeautifulSoup( r.content, features = "lxml" )
+
   creation = functions.get_thread_creation( soup = soup )
 
   post = soup.find_all('div', {'class' : "message-inner"})[ 0 ]
 
   message = functions.get_post_message( post )
 
+  #---------------------------------------------------------------------------#
+
+  driver = webdriver.Chrome()
+  driver.get(LOGIN_URL)
+  login = BeautifulSoup( driver.page_source, 'lxml' )
+
+  username_id = login.find('input', {'autocomplete' : 'username'})['id']
+  password_id = login.find('input', {'type' : 'password'})['id']
+
+  driver.find_element_by_id(username_id).send_keys(os.getenv('KIWIFARMS_USERNAME'))
+  driver.find_element_by_id(password_id).send_keys(os.getenv('KIWIFARMS_PASSWORD'))
+  driver.find_element_by_css_selector( '.button--primary.button.button--icon.button--icon--login.rippleButton' ).click( )
+
+  driver.get( USER_URL )
+  user = driver.page_source
+
+  driver.quit()
+
+  #---------------------------------------------------------------------------#
+
   for object, name in zip(
-    [ soup, reaction ],
-    [ 'soup', 'reaction' ] ):
+    [ soup, reaction, user ],
+    [ 'soup', 'reaction', 'user' ] ):
 
     with open( os.path.join( OUTPUT_DIR, name + '.html' ), 'w' ) as f:
 

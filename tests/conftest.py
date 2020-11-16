@@ -18,6 +18,7 @@ THREAD_URL = 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen
 
 INPUT_SOUP = 'tests/resources/soup.html'
 INPUT_REACTION = 'tests/resources/reaction.html'
+INPUT_USER = 'tests/resources/user.html'
 
 ###############################################################################
 
@@ -32,6 +33,9 @@ def resources( ):
 
   with open( INPUT_REACTION, 'r' ) as f:
     reaction_page = BeautifulSoup( f.read( ), features = 'lxml' )
+
+  with open( INPUT_USER, 'r' ) as f:
+    user_page = BeautifulSoup( f.read( ), features = 'lxml' )
 
   creation = functions.get_thread_creation( soup = soup )
   post = soup.find_all('div', {'class' : "message-inner"})[ 0 ]
@@ -49,6 +53,7 @@ def resources( ):
   resources_dict[ 'text' ] = 'this\n is a test string...'
   resources_dict[ 'reaction_page' ] = reaction_page
   resources_dict[ 'reaction' ] = reaction
+  resources_dict[ 'user_page' ] = user_page
 
   return resources_dict
 

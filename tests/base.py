@@ -65,4 +65,13 @@ def test_Reaction( resources ):
 
   reaction_insertion = reaction.reaction_insertion
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def test_User( resources ):
+
+  user = base.User(
+    user_page = resources[ 'user_page' ] )
+
+  user_insertion = user.user_insertion
+
 ###############################################################################

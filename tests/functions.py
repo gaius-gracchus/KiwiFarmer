@@ -45,7 +45,14 @@ KWARG_LIST = [
   ( 'get_reaction_author_user_id', 'reaction' ),
   ( 'get_reaction_id', 'reaction' ),
   ( 'get_reaction_name', 'reaction' ),
-  ( 'get_reaction_timestamp', 'reaction' ), ]
+  ( 'get_reaction_timestamp', 'reaction' ),
+  ( 'get_user_username', 'user_page' ),
+  ( 'get_user_id', 'user_page' ),
+  ( 'get_user_image', 'user_page' ),
+  ( 'get_user_messages', 'user_page' ),
+  ( 'get_user_reaction_score', 'user_page' ),
+  ( 'get_user_points', 'user_page' ),
+  ( 'get_user_timestamps', 'user_page' ), ]
 
 ###############################################################################
 

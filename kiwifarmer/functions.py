@@ -9,6 +9,8 @@ import re
 
 from bs4 import BeautifulSoup
 
+from kiwifarmer import utils
+
 # Thread field extraction functions
 ###############################################################################
 
@@ -669,4 +671,182 @@ def get_reaction_timestamp( reaction ):
 
   return int( reaction.find( 'time' )[ 'data-time' ] )
 
+# User field extraction functions
+###############################################################################
+
+def get_user_username( user_page ):
+
+  """Extract username from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  str
+    User's username
+    e.g. ``'null'``
+
+  """
+
+  url = user_page.find( 'meta', {'property' : 'og:url' } )[ 'content' ]
+  return url.split( '/')[ -2 ].split( '.' )[ 0 ]
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_id( user_page ):
+
+  """Extract user ID from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  int
+    User's user ID
+    e.g. ``1``
+
+  """
+
+  url = user_page.find( 'meta', {'property' : 'og:url' } )[ 'content' ]
+  return int( url.split( '/')[ -2 ].split( '.' )[ -1 ] )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_image( user_page ):
+
+  """Extract profile picture image link from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  str
+    Link of user's profile image
+    e.g. ``'https://no-cookie.kiwifarms.net/data/avatars/o/0/1.jpg?1578406498'``
+
+  """
+
+  avatar = user_page.find('a', {'class' : 'avatar avatar--l' } )
+
+  if avatar is None:
+    image = None
+  else:
+    image = avatar[ 'href']
+  return image
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_messages( user_page ):
+
+  """Extract the number of messages from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  int
+    Number of messages user has made
+    e.g. ``21564``
+
+  """
+
+  messages = user_page.find('a', {'class' : 'fauxBlockLink-linkRow u-concealed' } )
+
+  return utils.string_to_int( messages )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_reaction_score( user_page ):
+
+  """Extract the reaction score from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  int
+    Reaction score of user.
+    e.g. ``625981``
+
+  """
+
+  score = user_page.find('dl', {'class' : 'pairs pairs--rows pairs--rows--centered'}).find('dd')
+
+  return utils.string_to_int( score )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_points( user_page ):
+
+  """Extract the number of points from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  int
+    Number of points for user
+    e.g. ``345``
+
+  """
+
+  points = user_page.find_all('a', {'class' : 'fauxBlockLink-linkRow u-concealed'})[ 1 ]
+
+  return utils.string_to_int( points )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_timestamps( user_page ):
+
+  """Extract "Joined" and "Last Seen" timestamps from BeautifulSoup of HTML snippet
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  tuple of int
+    "Joined" and "Last Seen" timestamps of user
+    e.g. ``1352899026, 1583634317``
+
+  """
+
+  dls = user_page.find_all( 'dl', {'class' : 'pairs pairs--inline' } )
+  _udt = [ e.find( 'time', {'class' : 'u-dt'}) for e in dls ]
+  udt = list( filter( None, _udt ))
+
+  timestamps = [ int( dt[ 'data-time' ] ) for dt in udt ]
+
+  if len( timestamps ) == 1:
+    timestamps.append( None )
+
+  return timestamps
+
+###############################################################################

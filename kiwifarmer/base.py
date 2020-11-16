@@ -176,7 +176,6 @@ class Post:
     # store BeautifulSoup HTML snippet as class variable
     self.post = post_soup
 
-
     #.........................................................................#
 
     # extract section of HTML containing post message information
@@ -365,6 +364,8 @@ class Reaction:
     # individual reaction and needs to be passed from the ReactionPage class
     self.post_id = post_id
 
+    #.........................................................................#
+
     # store reaction author name as class variable
     self.reaction_author_username = functions.get_reaction_author_username( reaction = self.reaction )
     # store reaction author user ID as class variable
@@ -387,6 +388,62 @@ class Reaction:
       'reaction_id' : self.reaction_id,
       'reaction_name' : self.reaction_name,
       'reaction_timestamp' : self.reaction_timestamp }
+
+  #---------------------------------------------------------------------------#
+
+###############################################################################
+
+class User:
+
+  """Class for initializing the scrape of a single KiwiFarms user.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup HTML snippet that contains a KiwiFarms user page
+
+  """
+
+  #---------------------------------------------------------------------------#
+
+  def __init__( self,
+    user_page ):
+
+    # store BeautifulSoup HTML document as class variable
+    self.user_page = user_page
+
+    #.........................................................................#
+
+    # store user username as class variable
+    self.user_username = functions.get_user_username( user_page = self.user_page )
+    # store user ID as class variable
+    self.user_id = functions.get_user_id( user_page = self.user_page )
+    # store user profile picture link as class variable
+    self.user_image = functions.get_user_image( user_page = self.user_page )
+    # store number of user messages as class variable
+    self.user_messages = functions.get_user_messages( user_page = self.user_page )
+    # store user reaction score as class variable
+    self.user_reaction_score = functions.get_user_reaction_score( user_page = self.user_page )
+    # store number of user points as class variable
+    self.user_points = functions.get_user_points( user_page = self.user_page )
+    # store "Joined" and "Last Seen" timestamps as class variables
+    self.user_joined, self.user_last_seen = functions.get_user_timestamps( user_page = self.user_page )
+
+    #.........................................................................#
+
+    # save all user fields in a single dictionary, used for insertion into
+    # MySQL database
+    self.user_insertion = {
+      'user_username' : self.user_username,
+      'user_id' : self.user_id,
+      'user_image' : self.user_image,
+      'user_messages' : self.user_messages,
+      'user_reaction_score' : self.user_reaction_score,
+      'user_points' : self.user_points,
+      'user_joined' : self.user_joined,
+      'user_last_seen' : self.user_last_seen, }
+
+    #.........................................................................#
 
   #---------------------------------------------------------------------------#
 
