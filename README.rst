@@ -13,10 +13,6 @@ TODO
 
   * verify correctness of functions
 
-  * test utils
-
-  * add function tests for new functions (e.g. reactions)
-
 * expand instructions and info of docs
 
 * make sick logo/favicon

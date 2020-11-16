@@ -333,7 +333,7 @@ class ReactionPage:
 
     """
 
-    return functions.get_reaction_list( soup = self.soup )
+    return functions.get_reaction_list( reaction_page = self.soup )
 
   #---------------------------------------------------------------------------#
 

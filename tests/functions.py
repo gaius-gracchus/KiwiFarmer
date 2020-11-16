@@ -1,8 +1,15 @@
 # -*- coding: UTF-8 -*-
 
-"""Tests for to kiwifarms.functions module
-"""
+"""Tests for to kiwifarms.functions module.
 
+The full set of tests for this module can be evaluated by executing the
+command::
+
+  $ python -m pytest tests/functions.py
+
+from the project root directory.
+
+"""
 ###############################################################################
 
 import os
