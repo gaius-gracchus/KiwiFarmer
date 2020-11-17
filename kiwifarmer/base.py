@@ -27,37 +27,24 @@ class Thread:
   #---------------------------------------------------------------------------#
 
   def __init__( self,
-    input,
-    input_type = 'soup' ):
+    thread_page, ):
 
-    if input_type is 'soup':
+    # store parsable BeautifulSoup object as class variable
+    self.thread_page = thread_page
 
-      # store parsable BeautifulSoup object as class variable
-      self.soup = input
-
-      # get thread url from soup
-      self.thread_url = self.soup.find('link', {'rel' : 'canonical'})['href']
-
-    elif input_type is 'url':
-
-      # store page URL as class variable
-      self.thread_url = input
-
-      # make HTTP request of thread URL
-      r = requests.get( self.thread_url )
-      # store HTML content of HTTP request as parsable BeautifulSoup object
-      self.soup = BeautifulSoup( r.content, features = 'lxml' )
+    # get thread url from soup
+    self.thread_url = self.thread_page.find('link', {'rel' : 'canonical'})['href']
 
     # store thread ID as class variable
     self.thread_id = functions.get_thread_id( thread_url = self.thread_url )
 
     # extract thread title and store as class variable
-    self.thread_title = functions.get_thread_title( soup = self.soup )
+    self.thread_title = functions.get_thread_title( thread_page = self.thread_page )
     # extract thread last page and store as class variable
-    self.thread_last_page = functions.get_thread_last_page( soup = self.soup )
+    self.thread_last_page = functions.get_thread_last_page( thread_page = self.thread_page )
 
     # extract section of HTML containing thread creation information
-    self.creation = functions.get_thread_creation( soup = self.soup )
+    self.creation = functions.get_thread_creation( thread_page = self.thread_page )
 
     # extract thread creator username and store as class variable
     self.thread_creator_username = functions.get_thread_creator_username( creation = self.creation )
@@ -112,30 +99,10 @@ class Page:
   #---------------------------------------------------------------------------#
 
   def __init__( self,
-    input,
-    input_type = 'soup' ):
+    thread_page,):
 
-    if input_type is 'soup':
-
-      # store parsable BeautifulSoup object as class variable
-      self.soup = input
-
-    elif input_type is 'url':
-
-      # store page URL as class variable
-      self.page_url = input
-      # store thread ID as class variable
-      self.thread_id = functions.get_page_thread_id( page_url = self.page_url )
-
-      # make HTTP request of page URL
-      r = requests.get( self.page_url )
-      # store HTML content of HTTP request as parsable BeautifulSoup object
-      self.soup = BeautifulSoup( r.content, features = 'lxml' )
-
-    else:
-
-      msg = '`input_type` must be in `{"soup", "url"}`, and `input` must \
-        either be an instance of `bs4.element.Tag`, or `str`, respectively.'
+    # store parsable BeautifulSoup object as class variable
+    self.thread_page = thread_page
 
   #---------------------------------------------------------------------------#
 
@@ -151,7 +118,7 @@ class Page:
 
     """
 
-    return self.soup.find_all('div', {'class' : "message-inner"})
+    return self.thread_page.find_all('div', {'class' : "message-inner"})
 
   #---------------------------------------------------------------------------#
 
@@ -171,10 +138,10 @@ class Post:
   #---------------------------------------------------------------------------#
 
   def __init__(self,
-    post_soup ):
+    post ):
 
     # store BeautifulSoup HTML snippet as class variable
-    self.post = post_soup
+    self.post = post
 
     #.........................................................................#
 
@@ -232,7 +199,7 @@ class Post:
         'thread_id' : self.thread_id,
         'post_id' : self.post_id,
         'author_user_id' : self.post_author_user_id,
-        'blockquote_text' : functions.process_text( text = bqt),
+        'blockquote_text' : functions.process_text( text = bqt ),
         'blockquote_source' : bqs }
 
       # append the blockquote insertion dict to the list of dicts
@@ -310,12 +277,12 @@ class ReactionPage:
   #---------------------------------------------------------------------------#
 
   def __init__( self,
-    soup ):
+    reaction_page ):
 
     # store parsable BeautifulSoup object as class variable
-    self.soup = soup
+    self.reaction_page = reaction_page
 
-    url = soup.find( 'meta', {'property' : 'og:url' } )[ 'content' ]
+    url = reaction_page.find( 'meta', {'property' : 'og:url' } )[ 'content' ]
     self.post_id = int( url.split( '/' )[ 4 ] )
 
   #---------------------------------------------------------------------------#
@@ -332,7 +299,7 @@ class ReactionPage:
 
     """
 
-    return functions.get_reaction_list( reaction_page = self.soup )
+    return functions.get_reaction_list( reaction_page = self.reaction_page )
 
   #---------------------------------------------------------------------------#
 
@@ -354,11 +321,11 @@ class Reaction:
   #---------------------------------------------------------------------------#
 
   def __init__( self,
-    reaction_soup,
+    reaction,
     post_id ):
 
     # store BeautifulSoup HTML snippet as class variable
-    self.reaction = reaction_soup
+    self.reaction = reaction
 
     # store post ID as class variable, since it's not available in the
     # individual reaction and needs to be passed from the ReactionPage class

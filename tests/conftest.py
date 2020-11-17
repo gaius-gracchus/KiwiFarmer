@@ -16,9 +16,9 @@ from kiwifarmer import functions
 
 THREAD_URL = 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/'
 
-INPUT_SOUP = 'tests/resources/soup.html'
-INPUT_REACTION = 'tests/resources/reaction.html'
-INPUT_USER = 'tests/resources/user.html'
+INPUT_SOUP = 'tests/resources/thread_page.html'
+INPUT_REACTION = 'tests/resources/reaction_page.html'
+INPUT_USER = 'tests/resources/user_page.html'
 
 ###############################################################################
 
@@ -29,7 +29,7 @@ def resources( ):
   """
 
   with open( INPUT_SOUP, 'r' ) as f:
-    soup = BeautifulSoup( f.read( ), features = 'lxml' )
+    thread_page = BeautifulSoup( f.read( ), features = 'lxml' )
 
   with open( INPUT_REACTION, 'r' ) as f:
     reaction_page = BeautifulSoup( f.read( ), features = 'lxml' )
@@ -37,14 +37,14 @@ def resources( ):
   with open( INPUT_USER, 'r' ) as f:
     user_page = BeautifulSoup( f.read( ), features = 'lxml' )
 
-  creation = functions.get_thread_creation( soup = soup )
-  post = soup.find_all('div', {'class' : "message-inner"})[ 0 ]
-  message = functions.get_post_message( post )
-  reaction = functions.get_reaction_list( reaction_page )[ 0 ]
+  creation = functions.get_thread_creation( thread_page = thread_page )
+  post = thread_page.find_all('div', {'class' : "message-inner"})[ 0 ]
+  message = functions.get_post_message( post = post )
+  reaction = functions.get_reaction_list( reaction_page = reaction_page )[ 0 ]
 
   resources_dict = dict( )
 
-  resources_dict[ 'soup' ] = soup
+  resources_dict[ 'thread_page' ] = thread_page
   resources_dict[ 'creation' ] = creation
   resources_dict[ 'post' ] = post
   resources_dict[ 'message' ] = message

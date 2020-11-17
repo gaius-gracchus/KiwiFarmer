@@ -29,6 +29,10 @@ from kiwifarmer import (
 @pytest.fixture( scope = 'module' )
 def mysql_connection( ):
 
+  """SetUp/TearDown fixture to create and delete test MySQL database for
+  evaluating insertions and templates.
+  """
+
   # create test database
   #---------------------------------------------------------------------------#
 
@@ -42,7 +46,8 @@ def mysql_connection( ):
     use_unicode = True  )
 
   cursor = cnx.cursor()
-  cursor.execute("CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin")
+  cursor.execute(
+    'CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin' )
 
   cnx.commit()
 
@@ -83,7 +88,7 @@ def mysql_connection( ):
   # delete test database
   #---------------------------------------------------------------------------#
 
-  cursor.execute("DROP DATABASE kiwifarms_test")
+  cursor.execute( 'DROP DATABASE kiwifarms_test' )
 
   cnx.commit()
 
@@ -96,7 +101,7 @@ def mysql_connection( ):
 
 def test_Thread( resources, mysql_connection ):
 
-  thread = base.Thread( input = resources[ 'soup' ] )
+  thread = base.Thread( thread_page = resources[ 'thread_page' ] )
 
   thread_insertion = thread.thread_insertion
 
@@ -108,7 +113,7 @@ def test_Thread( resources, mysql_connection ):
 
 def test_Page( resources, mysql_connection ):
 
-  page = base.Page( input = resources[ 'soup' ] )
+  page = base.Page( thread_page = resources[ 'thread_page' ] )
 
   post_soups = page.get_post_soups( )
 
@@ -116,7 +121,7 @@ def test_Page( resources, mysql_connection ):
 
 def test_Post( resources, mysql_connection ):
 
-  post = base.Post( post_soup = resources[ 'post' ] )
+  post = base.Post( post = resources[ 'post' ] )
 
   post_insertion = post.post_insertion
   blockquote_insertions = post.blockquote_insertions
@@ -134,7 +139,7 @@ def test_Post( resources, mysql_connection ):
 
 def test_ReactionPage( resources, mysql_connection ):
 
-  reaction_page = base.ReactionPage( soup = resources[ 'reaction_page' ] )
+  reaction_page = base.ReactionPage( reaction_page = resources[ 'reaction_page' ] )
 
   reaction_list = reaction_page.get_reaction_soups( )
 
@@ -143,7 +148,7 @@ def test_ReactionPage( resources, mysql_connection ):
 def test_Reaction( resources, mysql_connection ):
 
   reaction = base.Reaction(
-    reaction_soup = resources[ 'reaction' ], post_id = 12 )
+    reaction = resources[ 'reaction' ], post_id = 12 )
 
   reaction_insertion = reaction.reaction_insertion
 

@@ -119,6 +119,7 @@ autoclass_content = 'both'
 # a list of builtin themes.
 html_theme = 'sphinx_rtd_theme'
 html_favicon = 'figs/favicon.ico'
+html_logo = 'figs/favicon.svg'
 
 # Theme options are theme-specific and customize the look and feel of a theme
 # further.  For a list of options available for each theme, see the

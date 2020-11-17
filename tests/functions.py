@@ -22,9 +22,9 @@ from kiwifarmer import functions
 
 KWARG_LIST = [
   ( 'get_thread_id', 'thread_url' ),
-  ( 'get_thread_title', 'soup' ),
-  ( 'get_thread_last_page', 'soup' ),
-  ( 'get_thread_creation', 'soup' ),
+  ( 'get_thread_title', 'thread_page' ),
+  ( 'get_thread_last_page', 'thread_page' ),
+  ( 'get_thread_creation', 'thread_page' ),
   ( 'get_thread_creator_username', 'creation' ),
   ( 'get_thread_creator_user_id', 'creation' ),
   ( 'get_thread_timestamp', 'creation' ),

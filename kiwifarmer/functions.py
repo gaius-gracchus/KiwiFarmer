@@ -31,17 +31,17 @@ def get_thread_id( thread_url ):
     e.g. ``38120``
   """
 
-  return int(thread_url.split('.')[-1][:-1])
+  return int( thread_url.split( '.' )[ -1 ].split( '/' )[ 0 ] )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def get_thread_title( soup ):
+def get_thread_title( thread_page ):
 
   """Extract thread title from thread BeautifulSoup object.
 
   Parameters
   ----------
-  soup : bs4.BeautifulSoup
+  thread_page : bs4.BeautifulSoup
     BeautifulSoup object containing parsable representation of HTML for first
     page of thread
 
@@ -52,17 +52,17 @@ def get_thread_title( soup ):
     e.g. ``'Satanic Vampire Neo-Nazis (Atomwaffen Division & Siegeculture) - AKA autistic Strasserists AKA Helter Skelter cult'``
   """
 
-  return str( soup.find('title').text )
+  return str( thread_page.find('title').text )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def get_thread_last_page( soup ):
+def get_thread_last_page( thread_page ):
 
   """Extract number of thread pages from thread BeautifulSoup object.
 
   Parameters
   ----------
-  soup : bs4.BeautifulSoup
+  thread_page : bs4.BeautifulSoup
     BeautifulSoup object containing parsable representation of HTML for first
     page of thread
 
@@ -74,7 +74,7 @@ def get_thread_last_page( soup ):
 
   """
 
-  found = soup.find('div', {'class' : "inputGroup inputGroup--numbers inputNumber"} )
+  found = thread_page.find('div', {'class' : "inputGroup inputGroup--numbers inputNumber"} )
 
   if found is None:
     # thread is only a single page
@@ -84,14 +84,14 @@ def get_thread_last_page( soup ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def get_thread_creation( soup ):
+def get_thread_creation( thread_page ):
 
   """Extract snippet of HTML that contains creation information
   from thread BeautifulSoup object.
 
   Parameters
   ----------
-  soup : bs4.BeautifulSoup
+  thread_page : bs4.BeautifulSoup
     BeautifulSoup object containing parsable representation of HTML for first
     page of thread
 
@@ -102,7 +102,7 @@ def get_thread_creation( soup ):
 
   """
 
-  return soup.find('ul', {'class' : 'listInline listInline--bullet'})
+  return thread_page.find('ul', {'class' : 'listInline listInline--bullet'})
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
