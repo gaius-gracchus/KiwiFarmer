@@ -81,6 +81,7 @@ def mysql_connection( ):
     else:
       pass
 
+  # make cursor variable available to tests
   #---------------------------------------------------------------------------#
 
   yield cursor

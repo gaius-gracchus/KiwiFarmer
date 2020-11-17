@@ -15,8 +15,6 @@ TODO
 
 * expand instructions and info of docs
 
-* make sick logo/favicon
-
 * config file parsing
 
 * analysis tools/utilities/visualizations
