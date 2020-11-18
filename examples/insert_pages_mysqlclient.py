@@ -6,10 +6,10 @@
 ###############################################################################
 
 import os
+import time
 
 from bs4 import BeautifulSoup
-import mysql.connector
-from mysql.connector import errorcode
+import MySQLdb
 
 from kiwifarmer import base, templates
 
@@ -23,22 +23,53 @@ START = 0
 
 if __name__ == '__main__':
 
-  cnx = mysql.connector.connect(
+  # create database
+  #---------------------------------------------------------------------------#
+
+  cnx = MySQLdb.connect(
     user = os.getenv( 'KIWIFARMER_USER'),
-    password = os.getenv( 'KIWIFARMER_PASSWORD' ),
+    passwd = os.getenv( 'KIWIFARMER_PASSWORD' ),
     host = '127.0.0.1',
-    database = 'kiwifarms',
     charset = 'utf8mb4',
-    collation = 'utf8mb4_bin',
+    use_unicode = True  )
+
+  cursor = cnx.cursor()
+  cursor.execute(
+    'CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin' )
+
+  cnx.commit()
+
+  cursor.close()
+  cnx.close()
+
+  cnx = MySQLdb.connect(
+    user = os.getenv( 'KIWIFARMER_USER'),
+    passwd = os.getenv( 'KIWIFARMER_PASSWORD' ),
+    host = '127.0.0.1',
+    database = 'kiwifarms_test',
+    charset = 'utf8mb4',
     use_unicode = True )
 
   cursor = cnx.cursor()
 
-  pages = os.listdir( PAGE_DIR )
+  for table_name in templates.TABLES.keys( ):
+    table_description = templates.TABLES[table_name]
+    try:
+      cursor.execute(table_description)
+    except:
+      pass
+    else:
+      pass
+
+  #---------------------------------------------------------------------------#
+
+  pages = os.listdir( PAGE_DIR )[ : 100 ]
+
+  start_time = time.time( )
 
   for i, page_file in enumerate( pages[ START: ] ):
 
-    print( i + START, page_file )
+    # print( i + START, page_file )
 
     with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
 
@@ -50,21 +81,21 @@ if __name__ == '__main__':
 
     for j, post in enumerate( post_soups ):
 
-
       post = base.Post( post = post )
-
-      # print( f'page: {i + START} ({page_file})\npost: {j}\nusername: {post.post_author_username}\npost_id: {post.post_id}\npost_text: {post.post_text}\n\n')
-      # for k, l in enumerate( post.link_insertions ):
-      #   print( k, l['link_source'])
-      #   print('\n')
 
       cursor.execute(templates.ADD_POST, post.post_insertion)
       cursor.executemany(templates.ADD_BLOCKQUOTE, post.blockquote_insertions)
       cursor.executemany(templates.ADD_LINK, post.link_insertions)
       cursor.executemany(templates.ADD_IMAGE, post.image_insertions)
 
+cursor.execute( 'DROP DATABASE kiwifarms_test' )
+
 cnx.commit()
 cursor.close()
 cnx.close()
+
+end_time = time.time( )
+
+print( f'Elapsed time: {end_time-start_time:.4f} seconds')
 
 ###############################################################################
