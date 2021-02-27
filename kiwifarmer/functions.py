@@ -475,7 +475,7 @@ def get_post_images( message ):
 
   # find all image tags in `message`
   images = message.find_all('div', {'class' : "bbImageWrapper js-lbImage"})
-  image_urls = [ str( image.find('img', {'class' : 'bbImage'})['src'] ) for image in images]
+  image_urls = [ str( image.find('img', {'class' : [ 'bbImage', 'bb' ]})['src'] ) for image in images]
 
   # loop over all images and remove them from the `message` object
   for image in images:

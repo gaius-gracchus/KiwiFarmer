@@ -184,7 +184,8 @@ async def download_many_files(
   semaphore,
   threshold_kb,
   url_to_filename,
-  filename_to_url ):
+  filename_to_url,
+  session = None, ):
 
   """Asynchronous function to download, in parallel, a list of URLs, and save
   the resulting HTML files in a specified output directory.
@@ -206,30 +207,53 @@ async def download_many_files(
 
   """
 
+  # Create output directory to store HTML files of threads, if the directory
+  # doesn't already exist
   os.makedirs( output_dir, exist_ok = True )
 
-  file_list = [ url_to_filename( url ) for url in url_list ]
-
+  # Convert file size threshold from kilobytes to bytes
   threshold_b = threshold_kb * 1024
 
-  existing_files = sorted( os.listdir( output_dir ) )
+  # Initialize variable for number of files left to download
+  N_files_to_download = 1
 
-  existing_files = [
-    file for file in existing_files if os.path.getsize(
-      os.path.join( output_dir, file ) ) >= threshold_b ]
+  # Keep running until all files are downloaded
+  while N_files_to_download > 0:
 
-  files_to_download = set( file_list ) - set( existing_files )
+    # Get list of all files in the list of URLs
+    file_list = [ url_to_filename( url ) for url in url_list ]
 
-  urls_to_download = [ filename_to_url( file ) for file in files_to_download ]
+    # Get list of all files in the output directory
+    _files = sorted( os.listdir( output_dir ) )
 
-  print( f'Number of URLs to download: {len( urls_to_download )}' )
+    # Delete all files in the output directory smaller than the threshold size
+    [ os.remove( os.path.join( output_dir, file ) ) for file in _files if os.path.getsize( os.path.join( output_dir, file ) ) <= threshold_b ]
 
-  sem = asyncio.Semaphore( semaphore )
+    # Get list of all files in the output directory, not including the ones
+    # just deleted for being too small
+    files = sorted( os.listdir( output_dir ) )
 
-  #---------------------------------------------------------------------------#
+    # Get a list of all files that still need to be downloaded
+    files_to_download = set( file_list ) - set( files )
 
-  async with ClientSession() as session:
-    coros = [ make_request( session, url, sem, output_dir, url_to_filename ) for url in urls_to_download ]
-    result_files = await asyncio.gather( *coros )
+    # Compute the number of files left to download (function stops when this
+    # value is zero)
+    N_files_to_download = len( files_to_download )
+
+    # Convert filename to URL, for all files to be downloaded
+    urls_to_download = [ filename_to_url( file ) for file in files_to_download ]
+
+    print( f'Number of URLs to download: {N_files_to_download}' )
+
+    # Initialize asynchronous semaphore (higher values download more files at a
+    # time, but typically leads to more response error codes)
+    sem = asyncio.Semaphore( semaphore )
+
+    #-------------------------------------------------------------------------#
+
+    # Use aiohttp to download all the URLs and save them as HTML files
+    async with ClientSession( ) as session:
+      coros = [ make_request( session, url, sem, output_dir, url_to_filename ) for url in urls_to_download ]
+      result_files = await asyncio.gather( *coros )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#

@@ -6,6 +6,7 @@
 ###############################################################################
 
 import os
+from multiprocessing import Pool
 
 from bs4 import BeautifulSoup
 import mysql.connector
@@ -15,11 +16,34 @@ from kiwifarmer import base, templates
 
 ###############################################################################
 
-PAGE_DIR = '../../data/downloaded_pages'
+PAGE_DIR = '../../data_20210224/downloaded_pages'
 
 START = 0
 
 DATABASE = 'kiwifarms_20210224'
+
+###############################################################################
+
+def insert_page( page_file ):
+
+  print( page_file )
+
+  with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
+
+    thread_page = BeautifulSoup( f.read( ), 'lxml' )
+
+  page = base.Page( thread_page = thread_page )
+
+  post_soups = page.get_post_soups( )
+
+  for j, post in enumerate( post_soups ):
+
+    post = base.Post( post = post )
+
+    cursor.execute(templates.ADD_POST, post.post_insertion)
+    cursor.executemany(templates.ADD_BLOCKQUOTE, post.blockquote_insertions)
+    cursor.executemany(templates.ADD_LINK, post.link_insertions)
+    cursor.executemany(templates.ADD_IMAGE, post.image_insertions)
 
 ###############################################################################
 
@@ -77,34 +101,11 @@ if __name__ == '__main__':
 
   pages = os.listdir( PAGE_DIR )
 
-  for i, page_file in enumerate( pages[ START: ] ):
+  pool = Pool( )
+  pool.map( insert_page, pages )
 
-    print( i + START, page_file )
-
-    with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
-
-      thread_page = BeautifulSoup( f.read( ), 'lxml' )
-
-    page = base.Page( thread_page = thread_page )
-
-    post_soups = page.get_post_soups( )
-
-    for j, post in enumerate( post_soups ):
-
-      post = base.Post( post = post )
-
-      # print( f'page: {i + START} ({page_file})\npost: {j}\nusername: {post.post_author_username}\npost_id: {post.post_id}\npost_text: {post.post_text}\n\n')
-      # for k, l in enumerate( post.link_insertions ):
-      #   print( k, l['link_source'])
-      #   print('\n')
-
-      cursor.execute(templates.ADD_POST, post.post_insertion)
-      cursor.executemany(templates.ADD_BLOCKQUOTE, post.blockquote_insertions)
-      cursor.executemany(templates.ADD_LINK, post.link_insertions)
-      cursor.executemany(templates.ADD_IMAGE, post.image_insertions)
-
-cnx.commit()
-cursor.close()
-cnx.close()
+  cnx.commit()
+  cursor.close()
+  cnx.close()
 
 ###############################################################################

@@ -108,9 +108,9 @@ TABLES = {
     "  `user_username` varchar(128) NOT NULL,"
     "  `user_id` mediumint NOT NULL,"
     "  `user_image` varchar(2048),"
-    "  `user_messages` mediumint NOT NULL,"
-    "  `user_reaction_score` mediumint NOT NULL,"
-    "  `user_points` mediumint NOT NULL,"
+    "  `user_messages` int NOT NULL,"
+    "  `user_reaction_score` int NOT NULL,"
+    "  `user_points` int NOT NULL,"
     "  `user_joined` int NOT NULL,"
     "  `user_last_seen` int"
     ") ENGINE=InnoDB") }

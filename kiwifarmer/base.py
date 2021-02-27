@@ -118,7 +118,10 @@ class Page:
 
     """
 
-    return self.thread_page.find_all('div', {'class' : "message-inner"})
+    _post_soups = self.thread_page.find_all('div', {'class' : "message-inner"})
+    post_soups = [ post_soup for post_soup in _post_soups if post_soup.find('article', {'class' : 'message-body js-selectToQuote'}) ]
+
+    return post_soups
 
   #---------------------------------------------------------------------------#
 

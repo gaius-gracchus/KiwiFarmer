@@ -19,6 +19,8 @@ THREAD_DIR = '../../data/downloaded_threads'
 
 START = 0
 
+DATABASE = 'kiwifarms_20210224'
+
 ###############################################################################
 
 if __name__ == '__main__':
@@ -27,7 +29,7 @@ if __name__ == '__main__':
     user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),
     host = '127.0.0.1',
-    database = 'kiwifarms_20210424',
+    database = DATABASE,
     charset = 'utf8mb4',
     collation = 'utf8mb4_bin',
     use_unicode = True )

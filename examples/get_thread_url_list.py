@@ -14,7 +14,7 @@ from kiwifarmer import base, templates
 
 ###############################################################################
 
-OUTPUT_DIR = '../../data_fresh'
+OUTPUT_DIR = '../../data_20210224'
 SITEMAP_URL = 'https://kiwifarms.net/sitemap.xml'
 
 THREAD_LIST_FILENAME = 'thread_url_list.txt'

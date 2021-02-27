@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-"""Test initialization of the `Thread` class.
+"""Read column from table in database
 """
 
 ###############################################################################
@@ -10,14 +10,15 @@ import os
 from bs4 import BeautifulSoup
 import mysql.connector
 from mysql.connector import errorcode
+import pandas as pd
 
 from kiwifarmer import base, templates
 
 ###############################################################################
 
-THREAD_DIR = '../../data/downloaded_threads'
+COMMAND = 'SELECT post_url FROM posts'
 
-START = 0
+OUTPUT_POST_URL_LIST = '../../data_fresh/post_url_list.txt'
 
 ###############################################################################
 
@@ -27,29 +28,18 @@ if __name__ == '__main__':
     user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),
     host = '127.0.0.1',
-    database = 'kiwifarms_20210424',
+    database = 'kiwifarms',
     charset = 'utf8mb4',
     collation = 'utf8mb4_bin',
     use_unicode = True )
 
-  cursor = cnx.cursor( )
 
-  threads = os.listdir( THREAD_DIR )
+  df = pd.read_sql( sql = COMMAND, con = cnx )
 
-  for i, thread_file in enumerate( threads[ START: ] ):
+  df.to_csv( OUTPUT_POST_URL_LIST, sep = '\n', header = False, index = False )
 
-    print( i + START, thread_file )
+  cnx.close( )
 
-    with open( os.path.join( THREAD_DIR, thread_file ), 'r' ) as f:
 
-      thread_soup = BeautifulSoup( f.read( ), 'lxml' )
-
-    thread = base.Thread( input = thread_soup )
-
-    cursor.execute(templates.ADD_THREAD, thread.thread_insertion)
-
-  cnx.commit()
-  cursor.close()
-  cnx.close()
 
 ###############################################################################

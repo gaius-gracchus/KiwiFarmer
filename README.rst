@@ -30,7 +30,7 @@ Steps
 
   .. code-block:: bash
 
-    python get_thread_url_list.py
+    python 01_get_thread_url_list.py
 
 2. Download the first page of each thread (rerun until all threads download successfully)
 

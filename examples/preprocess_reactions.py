@@ -18,7 +18,7 @@ from bs4 import BeautifulSoup
 
 ###############################################################################
 
-INPUT_DIR = '../../data_fresh/downloaded_reactions/'
+INPUT_DIR = '../../data_fresh/downloaded_pages/'
 
 DECLARATION = '<!DOCTYPE html>'
 
@@ -29,7 +29,11 @@ if __name__ == '__main__':
   files = sorted( os.listdir( INPUT_DIR ) )
   files = [ os.path.join( INPUT_DIR, file ) for file in files ]
 
-  for file in files:
+  N_files = len( files )
+
+  for i, file in enumerate( files ):
+
+    print( f'[ {i} / {N_files} ]')
 
     with open( file, 'r' ) as f:
       r = f.read( )
