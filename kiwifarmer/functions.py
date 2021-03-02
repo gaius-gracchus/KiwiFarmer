@@ -31,7 +31,12 @@ def get_thread_id( thread_url ):
     e.g. ``38120``
   """
 
-  return int( thread_url.split( '.' )[ -1 ].split( '/' )[ 0 ] )
+  s = thread_url.split( '.' )
+
+  if len( s ) == 3:
+    return int( s[ -1 ].split( '/' )[ 0 ] )
+  else:
+    return int( s[ -1 ].split( '/' )[ -2 ] )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 

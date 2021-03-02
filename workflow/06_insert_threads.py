@@ -15,9 +15,9 @@ from kiwifarmer import base, templates
 
 ###############################################################################
 
-THREAD_DIR = '../../data/downloaded_threads'
+THREAD_DIR = '../../data_20210224/downloaded_threads'
 
-START = 0
+START = 19122
 
 DATABASE = 'kiwifarms_20210224'
 
@@ -46,7 +46,7 @@ if __name__ == '__main__':
 
       thread_soup = BeautifulSoup( f.read( ), 'lxml' )
 
-    thread = base.Thread( input = thread_soup )
+    thread = base.Thread( thread_page = thread_soup )
 
     cursor.execute(templates.ADD_THREAD, thread.thread_insertion)
 

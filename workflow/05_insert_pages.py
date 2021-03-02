@@ -17,7 +17,7 @@ from kiwifarmer import base, templates
 
 PAGE_DIR = '../../data_20210224/downloaded_pages'
 
-START = 91616
+START = 265637
 
 DATABASE = 'kiwifarms_20210224'
 
