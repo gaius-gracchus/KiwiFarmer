@@ -11,6 +11,8 @@ TODO
 
 * expand unit tests
 
+  * make existing unit tests work
+
   * verify correctness of functions
 
 * expand instructions and info of docs
@@ -18,8 +20,6 @@ TODO
 * config file parsing
 
 * analysis tools/utilities/visualizations
-
-* use mysqlclient for improved performance
 
 * improve input argument handling for classes (e.g. type conversion/checking)
 
