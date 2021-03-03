@@ -266,14 +266,14 @@ async def download_many_files(
     # Get list of all files in the output directory
     _files = sorted( os.listdir( output_dir ) )
 
-    bad_files = get_bad_files(
-      output_dir = output_dir, )
+    # bad_files = get_bad_files(
+    #   output_dir = output_dir, )
 
     # Delete all files in the output directory smaller than the threshold size
     [ os.remove( os.path.join( output_dir, file ) ) for file in _files if os.path.getsize( os.path.join( output_dir, file ) ) <= threshold_b ]
 
     # Delete all malformed HTML files in the output directory
-    [ os.remove( os.path.join( output_dir, file ) ) for file in bad_files ]
+    # [ os.remove( os.path.join( output_dir, file ) ) for file in bad_files ]
 
     # Get list of all files in the output directory, not including the ones
     # just deleted for being too small

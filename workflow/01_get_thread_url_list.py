@@ -38,7 +38,7 @@ if __name__ == '__main__':
 
     output_sitemap = os.path.join( OUTPUT_DIR, sitemap )
 
-    os.system( f'wget {URL_PREFIX + sitemap} -O {output_sitemap}')
+    os.system( f'wget -4 {URL_PREFIX + sitemap} -O {output_sitemap}')
 
     with open( output_sitemap, 'r' ) as f:
       soup = BeautifulSoup( f.read( ), 'xml' )

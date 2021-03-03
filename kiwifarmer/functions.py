@@ -854,4 +854,55 @@ def get_user_timestamps( user_page ):
 
   return timestamps
 
+# Following field extraction functions
 ###############################################################################
+
+def get_following_user_id( following_page ):
+
+  """Get the ID of the user, from BeautifulSoup of HTML document containing
+  user following information
+
+  Parameters
+  ----------
+  following_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user following information
+
+  Returns
+  -------
+  int
+    Member ID of user
+    e.g. ``32976``
+
+  """
+
+  url = following_page.find( 'meta', { 'property' : 'og:url' } )[ 'content' ]
+
+  return int( url.split( '/' )[ -3 ] )
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_following_following_ids( following_page ):
+
+  """Get the IDs of all users that the user follows, from BeautifulSoup of HTML
+  document containing user following information
+
+  Parameters
+  ----------
+  following_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user following information
+
+  Returns
+  -------
+  list of int
+    List of member IDs for all users that the user follows
+    e.g. ``32976``
+
+  """
+
+  body = following_page.find( 'ol', { 'class' : 'block-body' } )
+  users = body.find_all( 'li', { 'class' : 'block-row block-row--separated' } )
+  user_ids = [ int( user.find( 'a', { 'class' : 'username' } )[ 'data-user-id' ] ) for user in users ]
+
+  return user_ids
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#

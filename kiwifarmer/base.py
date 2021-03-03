@@ -418,3 +418,61 @@ class User:
   #---------------------------------------------------------------------------#
 
 ###############################################################################
+
+class Following:
+
+  """Class for initializing the scrape of the following of a single KiwiFarms user.
+
+  Parameters
+  ----------
+  following_page : bs4.element.Tag
+    BeautifulSoup HTML snippet that contains the "Following" page of a
+    KiwiFarms user
+
+  """
+
+  #---------------------------------------------------------------------------#
+
+  def __init__( self,
+    following_page ):
+
+    # store BeautifulSoup HTML document as class variable
+    self.following_page = following_page
+
+    #.........................................................................#
+
+    # store user username as class variable
+    self.user_id = functions.get_following_user_id( following_page = self.following_page )
+    self.following_user_ids = functions.get_following_following_ids( following_page = self.following_page )
+
+    # generate list of dicts for following fields
+    #.........................................................................#
+
+    # initialize list for storing following insertion dicts
+    _following_insertions = list( )
+
+    # initialize list of edges for NetworkX graph
+    self.ebunch = list( )
+
+    # loop over all following users
+    for fid in self.following_user_ids:
+
+      _d = {
+        'user_id' : self.user_id,
+        'following_user_id' : fid, }
+
+      # append the following insertion dict to the list of dicts
+      _following_insertions.append( _d )
+
+      # define edge and append to ebunch
+      edge = ( self.user_id, fid, { 'weight' : 1 } )
+      self.ebunch.append( edge )
+
+    # save list of following insertions as class variable
+    self.following_insertions = _following_insertions
+
+    #.........................................................................#
+
+  #---------------------------------------------------------------------------#
+
+###############################################################################

@@ -113,6 +113,11 @@ TABLES = {
     "  `user_points` int NOT NULL,"
     "  `user_joined` int NOT NULL,"
     "  `user_last_seen` int"
+    ") ENGINE=InnoDB"),
+  'following' : (
+    "CREATE TABLE `following` ("
+    "  `user_id` mediumint NOT NULL,"
+    "  `following_user_id` mediumint NOT NULL"
     ") ENGINE=InnoDB") }
 
 ###############################################################################
