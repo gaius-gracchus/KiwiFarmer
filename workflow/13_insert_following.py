@@ -1,12 +1,11 @@
 # -*- coding: UTF-8 -*-
 
-"""Test initialization of the `Thread` class.
+"""Test initialization of the `Following` class.
 """
 
 ###############################################################################
 
 import os
-from multiprocessing import Pool
 
 from bs4 import BeautifulSoup
 import mysql.connector
@@ -16,7 +15,7 @@ from kiwifarmer import base, templates
 
 ###############################################################################
 
-PAGE_DIR = '../../data_20210224/downloaded_pages'
+PAGE_DIR = '../../data_20210224/downloaded_members_connections'
 
 START = 0
 
@@ -24,52 +23,10 @@ DATABASE = 'kiwifarms_20210224'
 
 ###############################################################################
 
-def insert_page( page_file ):
-
-  print( page_file )
-
-  with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
-
-    thread_page = BeautifulSoup( f.read( ), 'lxml' )
-
-  page = base.Page( thread_page = thread_page )
-
-  post_soups = page.get_post_soups( )
-
-  for j, post in enumerate( post_soups ):
-
-    post = base.Post( post = post )
-
-    cursor.execute(templates.ADD_POST, post.post_insertion)
-    cursor.executemany(templates.ADD_BLOCKQUOTE, post.blockquote_insertions)
-    cursor.executemany(templates.ADD_LINK, post.link_insertions)
-    cursor.executemany(templates.ADD_IMAGE, post.image_insertions)
-
-###############################################################################
-
 if __name__ == '__main__':
 
-  # Create database (you only need to do this once)
-  #---------------------------------------------------------------------------#
 
-  cnx = mysql.connector.connect(
-    user = os.getenv( 'KIWIFARMER_USER'),
-    passwd = os.getenv( 'KIWIFARMER_PASSWORD' ),
-    host = '127.0.0.1',
-    charset = 'utf8mb4',
-    collation = 'utf8mb4_bin',
-    use_unicode = True  )
-
-  cursor = cnx.cursor()
-  cursor.execute(
-    f'CREATE DATABASE {DATABASE} character set utf8mb4 collate utf8mb4_bin' )
-
-  cnx.commit()
-
-  cursor.close()
-  cnx.close()
-
-  # Create tables in database (you only need to do this once)
+  # Connect to database
   #---------------------------------------------------------------------------#
 
   cnx = mysql.connector.connect(
@@ -100,9 +57,20 @@ if __name__ == '__main__':
   #---------------------------------------------------------------------------#
 
   pages = os.listdir( PAGE_DIR )
+  pages = [ p for p in pages if p.split( '_' )[ 1 ] == 'following' ]
+  N_pages = len( pages )
 
-  pool = Pool( )
-  pool.map( insert_page, pages )
+  for i, page_file in enumerate( pages[ START: ] ):
+
+    print( f'[ {i + START} / {N_pages} ]', page_file )
+
+    with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
+
+      following_page = BeautifulSoup( f.read( ), 'lxml' )
+
+    following = base.Following( following_page = following_page )
+
+    cursor.executemany(templates.ADD_FOLLOWING, following.following_insertions)
 
   cnx.commit()
   cursor.close()

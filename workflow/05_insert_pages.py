@@ -76,10 +76,11 @@ if __name__ == '__main__':
   #---------------------------------------------------------------------------#
 
   pages = os.listdir( PAGE_DIR )
+  N_pages = len( pages )
 
   for i, page_file in enumerate( pages[ START: ] ):
 
-    print( i + START, page_file )
+    print( f'[ {i + START} / {N_pages} ]', page_file )
 
     with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
 

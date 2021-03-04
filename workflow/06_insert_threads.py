@@ -37,10 +37,11 @@ if __name__ == '__main__':
   cursor = cnx.cursor( )
 
   threads = os.listdir( THREAD_DIR )
+  N_threads = len( threads )
 
   for i, thread_file in enumerate( threads[ START: ] ):
 
-    print( i + START, thread_file )
+    print( f'[ {i + START} / {N_threads} ]', thread_file )
 
     with open( os.path.join( THREAD_DIR, thread_file ), 'r' ) as f:
 

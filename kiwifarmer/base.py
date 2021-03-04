@@ -451,9 +451,6 @@ class Following:
     # initialize list for storing following insertion dicts
     _following_insertions = list( )
 
-    # initialize list of edges for NetworkX graph
-    self.ebunch = list( )
-
     # loop over all following users
     for fid in self.following_user_ids:
 
@@ -463,10 +460,6 @@ class Following:
 
       # append the following insertion dict to the list of dicts
       _following_insertions.append( _d )
-
-      # define edge and append to ebunch
-      edge = ( self.user_id, fid, { 'weight' : 1 } )
-      self.ebunch.append( edge )
 
     # save list of following insertions as class variable
     self.following_insertions = _following_insertions

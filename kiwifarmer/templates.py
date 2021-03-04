@@ -45,7 +45,13 @@ ADD_REACTION = (
 ADD_USER = (
   "INSERT INTO users "
   "(user_username, user_id, user_image, user_messages, user_reaction_score, user_points, user_joined, user_last_seen) "
-  "VALUES (%(user_username)s, %(user_id)s, %(user_image)s, %(user_messages)s, %(user_reaction_score)s,%(user_points)s, %(user_joined)s, %(user_last_seen)s  )")
+  "VALUES (%(user_username)s, %(user_id)s, %(user_image)s, %(user_messages)s, %(user_reaction_score)s,%(user_points)s, %(user_joined)s, %(user_last_seen)s)")
+
+# template for inserting user insertion dict into MySQL database
+ADD_FOLLOWING = (
+  "INSERT INTO following "
+  "(user_id, following_user_id) "
+  "VALUES (%(user_id)s, %(following_user_id)s)")
 
 ###############################################################################
 

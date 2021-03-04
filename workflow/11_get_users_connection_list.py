@@ -14,9 +14,9 @@ import numpy as np
 
 ###############################################################################
 
-MEMBER_DIR = '../data_20210224/downloaded_members_about'
+MEMBER_DIR = '../../data_20210224/downloaded_members_about'
 
-CONNECTION_LIST = '../data_20210224/connection_url_list.txt'
+CONNECTION_LIST = '../../data_20210224/connection_url_list.txt'
 
 ###############################################################################
 
