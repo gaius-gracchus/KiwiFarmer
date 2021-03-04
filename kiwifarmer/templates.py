@@ -44,14 +44,20 @@ ADD_REACTION = (
 # template for inserting user insertion dict into MySQL database
 ADD_USER = (
   "INSERT INTO users "
-  "(user_username, user_id, user_image, user_messages, user_reaction_score, user_points, user_joined, user_last_seen) "
-  "VALUES (%(user_username)s, %(user_id)s, %(user_image)s, %(user_messages)s, %(user_reaction_score)s,%(user_points)s, %(user_joined)s, %(user_last_seen)s)")
+  "(user_username, user_id, user_image, user_messages, user_reaction_score, user_points, user_joined, user_last_seen, user_blurb, user_role) "
+  "VALUES (%(user_username)s, %(user_id)s, %(user_image)s, %(user_messages)s, %(user_reaction_score)s,%(user_points)s, %(user_joined)s, %(user_last_seen)s, %(user_blurb)s, %(user_role)s)")
 
 # template for inserting user insertion dict into MySQL database
 ADD_FOLLOWING = (
   "INSERT INTO following "
   "(user_id, following_user_id) "
   "VALUES (%(user_id)s, %(following_user_id)s)")
+
+# template for inserting user insertion dict into MySQL database
+ADD_TROPHY = (
+  "INSERT INTO trophies "
+  "(user_id, trophy_points, trophy_name, trophy_description, trophy_time) "
+  "VALUES (%(user_id)s, %(trophy_points)s, %(trophy_name)s, %(trophy_description)s, %(trophy_time)s)")
 
 ###############################################################################
 
@@ -118,12 +124,22 @@ TABLES = {
     "  `user_reaction_score` int NOT NULL,"
     "  `user_points` int NOT NULL,"
     "  `user_joined` int NOT NULL,"
-    "  `user_last_seen` int"
+    "  `user_last_seen` int,"
+    "  `user_blurb` varchar(2048),"
+    "  `user_role` varchar(2048)"
     ") ENGINE=InnoDB"),
   'following' : (
     "CREATE TABLE `following` ("
     "  `user_id` mediumint NOT NULL,"
     "  `following_user_id` mediumint NOT NULL"
-    ") ENGINE=InnoDB") }
+    ") ENGINE=InnoDB"),
+  'trophies' : (
+    "CREATE TABLE `trophies` ("
+    "  `user_id` mediumint NOT NULL,"
+    "  `trophy_name` varchar(2048),"
+    "  `trophy_description` varchar(2048),"
+    "  `trophy_points` int NOT NULL,"
+    "  `trophy_time` int"
+    ") ENGINE=InnoDB"), }
 
 ###############################################################################

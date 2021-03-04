@@ -1,6 +1,6 @@
 # -*- coding: UTF-8 -*-
 
-"""Test initialization of the `User` class.
+"""Test initialization of the `TrophyPage` class.
 """
 
 ###############################################################################
@@ -10,13 +10,12 @@ import os
 from bs4 import BeautifulSoup
 import mysql.connector
 from mysql.connector import errorcode
-import pandas as pd
 
 from kiwifarmer import base, templates
 
 ###############################################################################
 
-USER_PAGE_DIR = '../../data_20210224/downloaded_members'
+PAGE_DIR = '../../data_20210224/downloaded_members'
 
 START = 0
 
@@ -26,11 +25,12 @@ DATABASE = 'kiwifarms_20210224'
 
 if __name__ == '__main__':
 
-  # Create tables in database (you only need to do this once)
+
+  # Connect to database
   #---------------------------------------------------------------------------#
 
   cnx = mysql.connector.connect(
-    user = os.getenv( 'KIWIFARMER_USER' ),
+    user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),
     host = '127.0.0.1',
     database = DATABASE,
@@ -40,24 +40,24 @@ if __name__ == '__main__':
 
   cursor = cnx.cursor()
 
-  # Create tables in database (you only need to do this once)
+  # Process HTML files of pages, insert fields into `post` table in database
   #---------------------------------------------------------------------------#
 
-  cursor = cnx.cursor()
+  pages = os.listdir( PAGE_DIR )
+  pages = [ p for p in pages if p.split( '_' )[ 1 ] == 'following' ]
+  N_pages = len( pages )
 
-  user_pages = os.listdir( USER_PAGE_DIR )
+  for i, page_file in enumerate( pages[ START: ] ):
 
-  for i, user_page_file in enumerate( user_pages[ START: ] ):
+    print( f'[ {i + START} / {N_pages} ]', page_file )
 
-    print( f'{i + START} / {len( user_pages )}; {user_page_file}' )
+    with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
 
-    with open( os.path.join( USER_PAGE_DIR, user_page_file ), 'r' ) as f:
+      following_page = BeautifulSoup( f.read( ), 'lxml' )
 
-      user_page = BeautifulSoup( f.read( ), 'lxml' )
+    following = base.Following( following_page = following_page )
 
-    user = base.User( user_page = user_page )
-
-    cursor.execute(templates.ADD_USER, user.user_insertion)
+    cursor.executemany(templates.ADD_FOLLOWING, following.following_insertions)
 
   cnx.commit()
   cursor.close()

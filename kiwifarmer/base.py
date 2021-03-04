@@ -398,7 +398,10 @@ class User:
     self.user_points = functions.get_user_points( user_page = self.user_page )
     # store "Joined" and "Last Seen" timestamps as class variables
     self.user_joined, self.user_last_seen = functions.get_user_timestamps( user_page = self.user_page )
-
+    # store user blurb as class variable
+    self.user_blurb = functions.get_user_blurb( user_page = self.user_page )
+    # store user role as class variable
+    self.user_role = functions.get_user_role( user_page = self.user_page )
     #.........................................................................#
 
     # save all user fields in a single dictionary, used for insertion into
@@ -411,7 +414,9 @@ class User:
       'user_reaction_score' : self.user_reaction_score,
       'user_points' : self.user_points,
       'user_joined' : self.user_joined,
-      'user_last_seen' : self.user_last_seen, }
+      'user_last_seen' : self.user_last_seen,
+      'user_blurb' : self.user_blurb,
+      'user_role' : self.user_role, }
 
     #.........................................................................#
 
@@ -463,6 +468,71 @@ class Following:
 
     # save list of following insertions as class variable
     self.following_insertions = _following_insertions
+
+    #.........................................................................#
+
+  #---------------------------------------------------------------------------#
+
+###############################################################################
+
+class TrophyPage:
+
+  """Class for initializing the scrape of all trophies of a single KiwiFarms user.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup HTML snippet that contains a KiwiFarms user page
+
+  """
+
+  #---------------------------------------------------------------------------#
+
+  def __init__( self,
+    user_page ):
+
+    # store BeautifulSoup HTML document as class variable
+    self.user_page = user_page
+
+    # store user ID as class variable
+    self.user_id = functions.get_user_id( user_page = self.user_page )
+
+    self.get_trophy_soups( )
+
+    _trophy_insertions = list( )
+
+    for trophy in self.trophies:
+
+      _d = {
+        'user_id' : self.user_id,
+        'trophy_name' : functions.get_trophy_name( trophy ),
+        'trophy_description' : functions.get_trophy_description( trophy ),
+        'trophy_points' : functions.get_trophy_points( trophy ),
+        'trophy_time' : functions.get_trophy_time( trophy ), }
+
+      _trophy_insertions.append( _d )
+
+    self.trophy_insertions = _trophy_insertions
+
+  #---------------------------------------------------------------------------#
+
+  def get_trophy_soups( self ):
+
+    """Generate a list of BeautifulSoup HTML snippets that each contain a
+    trophy for a KiwiFarms post.
+
+    Returns
+    -------
+    list:
+      List of BeautifulSoup HTML snippets that each contain a trophy for a
+      KiwiFarms user.
+
+    """
+
+    trophy_list = self.user_page.find( 'ol', { 'class' : 'listPlain' } )
+    trophies = trophy_list.find_all( 'li', { 'class' : 'block-row' } )
+
+    self.trophies = trophies
 
     #.........................................................................#
 

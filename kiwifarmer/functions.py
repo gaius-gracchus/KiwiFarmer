@@ -854,6 +854,61 @@ def get_user_timestamps( user_page ):
 
   return timestamps
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_blurb( user_page ):
+
+  """Extract user blurb from BeautifulSoup of HTML page
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  str
+    String of user blurb.
+    e.g. ``'Ooperator'``
+
+  """
+
+  f = user_page.find( 'span', { 'class' : 'userTitle' } )
+
+  if f is None:
+    return None
+  else:
+    return f.text
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_user_role( user_page ):
+
+  """Extract user role/title from BeautifulSoup of HTML page
+  containing user information.
+
+  Parameters
+  ----------
+  user_page : bs4.element.Tag
+    BeautifulSoup of HTML snippet that containins user information
+
+  Returns
+  -------
+  str
+    String of user role. If user has multiple roles, the roles are
+    comma-delimited.
+    e.g. ``'Founder,Retired Staff'``
+
+  """
+
+  ems = user_page.find_all( 'em', { 'class' : 'userBanner userBanner userBanner--primary' } )
+
+  if ems == list( ):
+    return None
+  else:
+    return ','.join( [ em.text for em in ems ] )
+
 # Following field extraction functions
 ###############################################################################
 
@@ -905,4 +960,29 @@ def get_following_following_ids( following_page ):
 
   return user_ids
 
+# Trophy field extraction functions
+###############################################################################
+
+def get_trophy_points( trophy ):
+
+  return int( trophy.find( 'span', { 'class' : 'contentRow-figure contentRow-figure--text contentRow-figure--fixedSmall' } ).text )
+
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_trophy_name( trophy ):
+
+  return trophy.find( 'h2', { 'class' :  'contentRow-header' } ).text
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_trophy_description( trophy ):
+
+  return trophy.find( 'div', { 'class' : 'contentRow-minor' } ).text
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_trophy_time( trophy ):
+
+  return trophy.find( 'time', { 'class' : 'u-dt' } )[ 'data-time' ]
+
+###############################################################################
