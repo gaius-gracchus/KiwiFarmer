@@ -530,9 +530,11 @@ class TrophyPage:
     """
 
     trophy_list = self.user_page.find( 'ol', { 'class' : 'listPlain' } )
-    trophies = trophy_list.find_all( 'li', { 'class' : 'block-row' } )
-
-    self.trophies = trophies
+    if trophy_list is None:
+      self.trophies = list( )
+    else:
+      trophies = trophy_list.find_all( 'li', { 'class' : 'block-row' } )
+      self.trophies = trophies
 
     #.........................................................................#
 

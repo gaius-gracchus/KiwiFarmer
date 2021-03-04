@@ -44,7 +44,6 @@ if __name__ == '__main__':
   #---------------------------------------------------------------------------#
 
   pages = os.listdir( PAGE_DIR )
-  pages = [ p for p in pages if p.split( '_' )[ 1 ] == 'following' ]
   N_pages = len( pages )
 
   for i, page_file in enumerate( pages[ START: ] ):
@@ -53,11 +52,11 @@ if __name__ == '__main__':
 
     with open( os.path.join( PAGE_DIR, page_file ), 'r' ) as f:
 
-      following_page = BeautifulSoup( f.read( ), 'lxml' )
+      user_page = BeautifulSoup( f.read( ), 'lxml' )
 
-    following = base.Following( following_page = following_page )
+    trophy_page = base.TrophyPage( user_page = user_page )
 
-    cursor.executemany(templates.ADD_FOLLOWING, following.following_insertions)
+    cursor.executemany(templates.ADD_TROPHY, trophy_page.trophy_insertions)
 
   cnx.commit()
   cursor.close()

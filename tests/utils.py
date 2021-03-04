@@ -94,7 +94,7 @@ def test_reaction_filename_to_url_to_filename( ):
 @pytest.mark.asyncio
 async def test_make_request( ):
 
-  url_to_filename = lambda url : url.split( '/' )[ -1 ][ : -4 ] + 'html'
+  url_to_filename = lambda url : url.split( '.' )[ -1 ] + '.html'
 
   with tempfile.TemporaryDirectory() as temp_dir:
 
@@ -114,10 +114,11 @@ async def test_make_request( ):
 @pytest.mark.asyncio
 async def test_download_many_files( ):
 
-  url_to_filename = lambda url : url.split( '/' )[ -1 ][ : -4 ] + 'html'
-  filename_to_url = lambda filename : 'https://www.' + filename.split( '.' )[ 0 ][ : -4 ] + '.com'
+  url_to_filename = lambda url : url.split( '.' )[ -1 ] + '.html'
+  filename_to_url = lambda filename : 'https://example.' + filename.split( '.' )[ 0 ]
 
   with tempfile.TemporaryDirectory() as temp_dir:
+
     await utils.download_many_files(
       url_list = URL_LIST,
       output_dir = temp_dir,

@@ -47,7 +47,7 @@ def mysql_connection( ):
 
   cursor = cnx.cursor()
   cursor.execute(
-    'CREATE DATABASE kiwifarms_test character set utf8mb4 collate utf8mb4_bin' )
+    'CREATE DATABASE IF NOT EXISTS kiwifarms_test character set utf8mb4 collate utf8mb4_bin' )
 
   cnx.commit()
 
