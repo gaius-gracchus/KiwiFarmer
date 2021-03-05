@@ -183,4 +183,17 @@ def test_Following( resources, mysql_connection ):
 
   cursor.executemany(templates.ADD_FOLLOWING, following_insertions)
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def test_TrophyPage( resources, mysql_connection ):
+
+  trophy_page = base.TrophyPage(
+    user_page = resources[ 'user_about_page' ] )
+
+  trophy_insertions = trophy_page.trophy_insertions
+
+  cursor = mysql_connection
+
+  cursor.executemany(templates.ADD_TROPHY, trophy_insertions)
+
 ###############################################################################

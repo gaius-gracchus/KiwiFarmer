@@ -137,47 +137,6 @@ def string_to_int( s ):
 
 ###############################################################################
 
-def get_bad_files(
-  output_dir,
-  pattern = '</html>\n' ):
-
-  """Find all files that aren't complete HTML documents
-
-  Parameters
-  ----------
-  output_dir : str
-    Directory in which to search for malformed HTML files
-  pattern : str
-    If the last line of the file doesn't contain this string, the file is considered "bad" (i.e. a malformed HTML file)
-
-  Returns
-  -------
-  bad_files : list of str
-    List of malformed HTML files
-
-  """
-
-  files = os.listdir( output_dir )
-
-  bad_files = list( )
-
-  for file in files:
-
-    with open( os.path.join( output_dir, file ), 'rb' ) as f:
-
-      f.seek(-2, os.SEEK_END)
-
-      while f.read(1) != b'\n':
-          f.seek(-2, os.SEEK_CUR)
-      last_line = f.readline( ).decode( )
-
-    if last_line != pattern:
-      bad_files.append( file )
-
-  return bad_files
-
-###############################################################################
-
 async def make_request(
   session,
   url,
@@ -274,9 +233,6 @@ async def download_many_files(
 
     # Delete all files in the output directory smaller than the threshold size
     [ os.remove( os.path.join( output_dir, file ) ) for file in _files if os.path.getsize( os.path.join( output_dir, file ) ) <= threshold_b ]
-
-    # Delete all malformed HTML files in the output directory
-    # [ os.remove( os.path.join( output_dir, file ) ) for file in bad_files ]
 
     # Get list of all files in the output directory, not including the ones
     # just deleted for being too small

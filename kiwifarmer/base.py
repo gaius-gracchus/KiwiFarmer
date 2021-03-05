@@ -68,21 +68,6 @@ class Thread:
 
   #---------------------------------------------------------------------------#
 
-  def get_pages( self ):
-
-    """Generate a list of URLs for each page of the thread.
-
-    Returns
-    -------
-    list:
-      List of URLs for each page of the thread
-      e,g, ``[ 'https://kiwifarms.net/threads/satanic-vampire-neo-nazis-atomwaffen-division-siegeculture.38120/page-2/', ]``
-    """
-
-    return [ self.thread_url + f'page-{i}/' for i in range( 1, self.thread_last_page + 1 ) ]
-
-  #---------------------------------------------------------------------------#
-
 ###############################################################################
 
 class Page:
