@@ -54,7 +54,13 @@ KWARG_LIST = [
   ( 'get_user_points', 'user_page' ),
   ( 'get_user_timestamps', 'user_page' ),
   ( 'get_user_blurb', 'user_page' ),
-  ( 'get_user_role', 'user_page' ), ]
+  ( 'get_user_role', 'user_page' ),
+  ( 'get_following_user_id', 'following_page' ),
+  ( 'get_following_following_ids', 'following_page' ),
+  ( 'get_trophy_points', 'trophy' ),
+  ( 'get_trophy_name', 'trophy' ),
+  ( 'get_trophy_description', 'trophy' ),
+  ( 'get_trophy_time', 'trophy' ), ]
 
 ###############################################################################
 

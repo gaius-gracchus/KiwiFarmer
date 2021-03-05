@@ -170,4 +170,17 @@ def test_User( resources, mysql_connection ):
 
   cursor.execute(templates.ADD_USER, user_insertion)
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def test_Following( resources, mysql_connection ):
+
+  following = base.Following(
+    following_page = resources[ 'following_page' ] )
+
+  following_insertions = following.following_insertions
+
+  cursor = mysql_connection
+
+  cursor.executemany(templates.ADD_FOLLOWING, following_insertions)
+
 ###############################################################################

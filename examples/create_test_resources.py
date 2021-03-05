@@ -20,7 +20,7 @@ LOGIN_URL = 'https://kiwifarms.net/login/'
 
 USER_URL = 'https://kiwifarms.net/members/magnum-dong.9983/#about'
 
-OUTPUT_DIR = '../tests/resources'
+OUTPUT_DIR = '../tests/resources_test'
 
 ###############################################################################
 
@@ -43,23 +43,23 @@ if __name__ == '__main__':
 
   message = functions.get_post_message( post = post )
 
-  #---------------------------------------------------------------------------#
+  # #---------------------------------------------------------------------------#
 
-  driver = webdriver.Chrome()
-  driver.get(LOGIN_URL)
-  login = BeautifulSoup( driver.page_source, 'lxml' )
+  # driver = webdriver.Chrome()
+  # driver.get(LOGIN_URL)
+  # login = BeautifulSoup( driver.page_source, 'lxml' )
 
-  username_id = login.find('input', {'autocomplete' : 'username'})['id']
-  password_id = login.find('input', {'type' : 'password'})['id']
+  # username_id = login.find('input', {'autocomplete' : 'username'})['id']
+  # password_id = login.find('input', {'type' : 'password'})['id']
 
-  driver.find_element_by_id(username_id).send_keys(os.getenv('KIWIFARMS_USERNAME'))
-  driver.find_element_by_id(password_id).send_keys(os.getenv('KIWIFARMS_PASSWORD'))
-  driver.find_element_by_css_selector( '.button--primary.button.button--icon.button--icon--login.rippleButton' ).click( )
+  # driver.find_element_by_id(username_id).send_keys(os.getenv('KIWIFARMS_USERNAME'))
+  # driver.find_element_by_id(password_id).send_keys(os.getenv('KIWIFARMS_PASSWORD'))
+  # driver.find_element_by_css_selector( '.button--primary.button.button--icon.button--icon--login.rippleButton' ).click( )
 
-  driver.get( USER_URL )
-  user_page = driver.page_source
+  # driver.get( USER_URL )
+  # user_page = driver.page_source
 
-  driver.quit()
+  # driver.quit()
 
   #---------------------------------------------------------------------------#
 
