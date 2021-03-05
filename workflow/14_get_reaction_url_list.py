@@ -21,7 +21,7 @@ COMMAND = 'SELECT post_id FROM posts'
 
 DATABASE = 'kiwifarms_20210224'
 
-OUTPUT_CSV = '../../data_20210224/reactions_url_list.txt'
+OUTPUT_CSV = '../../data_20210224/reaction_url_list.txt'
 
 ###############################################################################
 

@@ -11,7 +11,9 @@ TODO
 
 * expand unit tests
 
-  * make existing unit tests work
+  * include new classes (Following, TrophyPage)
+
+  * auto-download HTML resources
 
   * verify correctness of functions
 

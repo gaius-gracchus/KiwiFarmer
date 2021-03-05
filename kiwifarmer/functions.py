@@ -965,11 +965,43 @@ def get_following_following_ids( following_page ):
 
 def get_trophy_points( trophy ):
 
+  """Get the number of points corresponding to a user's trophy, from
+  BeautifulSoup of HTML snippet containing information for one trophy
+
+  Parameters
+  ----------
+  trophy : bs4.element.Tag
+    BeautifulSoup of HTML snippet that contains information for one trophy
+
+  Returns
+  -------
+  int
+    Number of points corres
+    e.g. ``40``
+
+  """
+
   return int( trophy.find( 'span', { 'class' : 'contentRow-figure contentRow-figure--text contentRow-figure--fixedSmall' } ).text )
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 def get_trophy_name( trophy ):
+
+  """Get the name of a user's trophy, from BeautifulSoup of HTML snippet
+  containing information for one trophy
+
+  Parameters
+  ----------
+  trophy : bs4.element.Tag
+    BeautifulSoup of HTML snippet that contains information for one trophy
+
+  Returns
+  -------
+  str
+    Name of trophy
+    e.g. ``'Talent Finder'``
+
+  """
 
   return trophy.find( 'h2', { 'class' :  'contentRow-header' } ).text
 
@@ -977,12 +1009,44 @@ def get_trophy_name( trophy ):
 
 def get_trophy_description( trophy ):
 
+  """Get the description of a user's trophy, from BeautifulSoup of HTML snippet
+  containing information for one trophy
+
+  Parameters
+  ----------
+  trophy : bs4.element.Tag
+    BeautifulSoup of HTML snippet that contains information for one trophy
+
+  Returns
+  -------
+  str
+    Description of trophy
+    e.g. ``'Create a Lolcow thread that receives over 100,000 views.'``
+
+  """
+
   return trophy.find( 'div', { 'class' : 'contentRow-minor' } ).text
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 def get_trophy_time( trophy ):
 
-  return trophy.find( 'time', { 'class' : 'u-dt' } )[ 'data-time' ]
+  """Get the timestamp of a user's trophy, from BeautifulSoup of HTML snippet
+  containing information for one trophy
+
+  Parameters
+  ----------
+  trophy : bs4.element.Tag
+    BeautifulSoup of HTML snippet that contains information for one trophy
+
+  Returns
+  -------
+  int
+    Timestamp of trophy
+    e.g. ``1443429463``
+
+  """
+
+  return int( trophy.find( 'time', { 'class' : 'u-dt' } )[ 'data-time' ] )
 
 ###############################################################################

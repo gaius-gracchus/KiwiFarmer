@@ -257,6 +257,9 @@ async def download_many_files(
   # Initialize variable for number of files left to download
   N_files_to_download = 1
 
+  # Remove null values from URL list
+  url_list = list( filter( None, url_list ) )
+
   # Keep running until all files are downloaded
   while N_files_to_download > 0:
 
