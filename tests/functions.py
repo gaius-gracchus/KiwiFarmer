@@ -68,7 +68,7 @@ KWARG_LIST = [
 def test_minimal_init( resources, function_str, kwarg ):
 
   function = eval( 'functions.' + function_str )
-  kwargs = { kwarg : resources[ kwarg ]}
+  kwargs = { kwarg : resources[ kwarg ] }
 
   function( **kwargs )
 
