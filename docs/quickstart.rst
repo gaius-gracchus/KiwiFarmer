@@ -48,7 +48,7 @@ wherein the user will be prompted to enter their root MySQL password. In the MyS
 
 .. code-block:: MySQL
 
-  GRANT ALL PRIVILEGES ON kiwifarms_20210224.* TO '<user>'@'localhost';
+  GRANT ALL PRIVILEGES ON kiwifarms_test.* TO '<user>'@'localhost';
 
 where ``<user>`` is the user's MySQL username.
 

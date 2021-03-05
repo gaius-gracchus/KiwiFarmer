@@ -26,8 +26,6 @@ setup(
   author = 'Gaius Gracchus',
   packages = [
     'kiwifarmer' ],
-  test_suite = 'tests.test_suite',
-  dependency_links = [ ],
   install_requires = [
     'requests >= 2.25.0',
     'beautifulsoup4 >= 4.9.3',

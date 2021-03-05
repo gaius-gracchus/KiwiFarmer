@@ -25,6 +25,29 @@ DATABASE = 'kiwifarms_20210224'
 
 if __name__ == '__main__':
 
+  # Create database (you only need to do this once)
+  #---------------------------------------------------------------------------#
+
+  cnx = mysql.connector.connect(
+    user = os.getenv( 'KIWIFARMER_USER'),
+    passwd = os.getenv( 'KIWIFARMER_PASSWORD' ),
+    host = '127.0.0.1',
+    charset = 'utf8mb4',
+    collation = 'utf8mb4_bin',
+    use_unicode = True  )
+
+  cursor = cnx.cursor()
+  cursor.execute(
+    f'CREATE DATABASE {DATABASE} character set utf8mb4 collate utf8mb4_bin' )
+
+  cnx.commit()
+
+  cursor.close()
+  cnx.close()
+
+  # Create tables in database (you only need to do this once)
+  #---------------------------------------------------------------------------#
+
   cnx = mysql.connector.connect(
     user = os.getenv( 'KIWIFARMER_USER'),
     password = os.getenv( 'KIWIFARMER_PASSWORD' ),
@@ -34,7 +57,23 @@ if __name__ == '__main__':
     collation = 'utf8mb4_bin',
     use_unicode = True )
 
-  cursor = cnx.cursor( )
+  cursor = cnx.cursor()
+
+  for table_name in templates.TABLES.keys( ):
+    table_description = templates.TABLES[table_name]
+    try:
+      print("Creating table {}: ".format(table_name), end='')
+      cursor.execute(table_description)
+    except mysql.connector.Error as err:
+      if err.errno == errorcode.ER_TABLE_EXISTS_ERROR:
+        print("already exists.")
+      else:
+        print(err.msg)
+    else:
+      print("OK")
+
+  # Process HTML files of threads, insert fields into `threads` table
+  #---------------------------------------------------------------------------#
 
   threads = os.listdir( THREAD_DIR )
   N_threads = len( threads )
