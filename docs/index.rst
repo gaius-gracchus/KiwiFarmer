@@ -8,4 +8,5 @@
   introduction
   quickstart
   overview
+  workflow
   source/kiwifarmer
