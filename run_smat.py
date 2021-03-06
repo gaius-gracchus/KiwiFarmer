@@ -19,11 +19,20 @@ import kiwifarmer
 SITEMAP_URL = 'https://kiwifarms.net/sitemap.xml'
 THREAD_PATTERN = 'https://kiwifarms.net/threads/'
 
+REDIS_HOST = 'localhost'
+REDIS_PORT = 6379
+REDIS_DB = 1
+
+ES_HOSTS = [ { 'host' : 'localhost','port' : 9200 }, ]
 ES_INDEX = 'kf_posts'
 
 ###############################################################################
 
 def get_page_url( thread_unique, page ):
+
+  """Convert a `thread_unique` string and a page number to the corresponding
+  KiwiFarms URL.
+  """
 
   return f'https://kiwifarms.net/threads/{thread_unique}/page-{page}'
 
@@ -31,7 +40,24 @@ def get_page_url( thread_unique, page ):
 
 def process_thread( thread_unique, rdb, es ):
 
-  start_page = rdb.hget( thread_unique, 'last_page' ).decode( 'utf-8' )
+  """Process all posts in the thread corresponding to the specified `thread_unique` and index using an Elasticsearch index.
+
+  Parameters
+  ----------
+  thread_unique : str
+    Section of KiwiFarms thread URL that uniquely defines a single thread.
+    e.g. ``'music-suggestion-i-need-some-shit.86136'``
+  rdb : redis.Redis instance
+    Redis database used for caching
+  es : elasticsearch.Elasticsearch instance
+    Elasticsearch instance for indexing data
+
+  """
+
+  if not rdb.exists( thread_unique ):
+    start_page = '1'
+  else:
+    start_page = rdb.hget( thread_unique, 'last_page' ).decode( 'utf-8' )
 
   page_url = get_page_url( thread_unique, start_page )
   r = requests.get( page_url )
@@ -76,8 +102,15 @@ def process_thread( thread_unique, rdb, es ):
 # Connect to Redis database and Elasticsearch instance
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-rdb = redis.Redis( )
-es = Elasticsearch( )
+rdb = redis.Redis(
+  host = REDIS_HOST,
+  port = REDIS_PORT,
+  db = REDIS_DB )
+
+# rdb.flushdb( )
+
+es = Elasticsearch(
+  hosts = ES_HOSTS )
 
 # Get list of all URLs and their last modified date in the site's sitemap
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
@@ -117,19 +150,9 @@ for url in thread_urls:
 
     threads_to_process.append( thread_unique )
 
-    mapping = {
-      'last_mod' : last_mod,
-      'last_page' : 1,
-      'last_post' : 0 }
-
-    rdb.hset( name = thread_unique, mapping = mapping)
-
   else:
 
     prev_last_mod = rdb.hget( thread_unique, 'last_mod' ).decode( 'utf-8' )
-
-    # print( 'prev_last_mod: ', datetime.fromisoformat( prev_last_mod ))
-    # print( 'last_mod: ', datetime.fromisoformat( last_mod ))
 
     if datetime.fromisoformat( prev_last_mod ) < datetime.fromisoformat( last_mod ):
 
