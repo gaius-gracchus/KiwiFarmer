@@ -16,14 +16,22 @@ import kiwifarmer
 
 ###############################################################################
 
+# Master sitemap for KiwiFarms
 SITEMAP_URL = 'https://kiwifarms.net/sitemap.xml'
+
+# Pattern for KiwiFarms thread URLs
 THREAD_PATTERN = 'https://kiwifarms.net/threads/'
 
+# Redis instance host
 REDIS_HOST = 'localhost'
+# Redis instance port number
 REDIS_PORT = 6379
+# Redis instance database number
 REDIS_DB = 1
 
+# List of hosts for Elasticsearch instance
 ES_HOSTS = [ { 'host' : 'localhost','port' : 9200 }, ]
+# Name of Elasticsearch index to store data in
 ES_INDEX = 'kf_posts'
 
 ###############################################################################

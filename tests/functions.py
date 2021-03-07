@@ -34,6 +34,7 @@ KWARG_LIST = [
   ( 'get_post_author_username', 'post' ),
   ( 'get_post_author_user_id', 'post'  ),
   ( 'get_post_timestamp', 'post' ),
+  ( 'get_post_datetime', 'post' ),
   ( 'get_post_url', 'post' ),
   ( 'get_post_message', 'post' ),
   ( 'get_post_links', 'message' ),
