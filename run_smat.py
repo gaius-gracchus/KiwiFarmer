@@ -4,7 +4,7 @@
 
 ###############################################################################
 
-from datetime import datetime
+from datetime import datetime as dt
 
 from bs4 import BeautifulSoup
 import requests
@@ -34,6 +34,12 @@ ES_HOSTS = [ { 'host' : 'localhost','port' : 9200 }, ]
 # Name of Elasticsearch index to store data in
 ES_INDEX = 'kf_posts'
 
+# Threads that fail
+FAILING_THREADS = [ (
+  'chris-dream-and-ian-flynn.7495', {
+    'last_mod' : '2015-02-02T21:55:03+00:00',
+    'last_page' : 0 }, ) ]
+
 ###############################################################################
 
 def get_page_url( thread_unique, page ):
@@ -48,7 +54,8 @@ def get_page_url( thread_unique, page ):
 
 def process_thread( thread_unique, rdb, es ):
 
-  """Process all posts in the thread corresponding to the specified `thread_unique` and index using an Elasticsearch index.
+  """Process all posts in the thread corresponding to the specified
+  `thread_unique` and index using an Elasticsearch index.
 
   Parameters
   ----------
@@ -130,6 +137,11 @@ rdb = redis.Redis(
   port = REDIS_PORT,
   db = REDIS_DB )
 
+# Add data from failing threads to Redis database so they get skipped
+for thread_unique, mapping in FAILING_THREADS:
+  if not rdb.exists( thread_unique ):
+    rdb.hset( name = thread_unique, mapping = mapping)
+
 # Connect to Elasticsearch instance using specified list of hosts
 es = Elasticsearch(
   hosts = ES_HOSTS )
@@ -190,7 +202,7 @@ for url in thread_urls:
 
     prev_last_mod = rdb.hget( thread_unique, 'last_mod' ).decode( 'utf-8' )
 
-    if datetime.fromisoformat( prev_last_mod ) < datetime.fromisoformat( last_mod ):
+    if dt.fromisoformat( prev_last_mod ) < dt.fromisoformat( last_mod ):
 
       threads_to_process.append( thread_unique )
 
@@ -202,7 +214,8 @@ for thread_unique in threads_to_process:
 
   print( thread_unique )
 
-  # Using the Redis database as a cache, find all posts in the given thread, index their data to an Elasticsearch instance
+  # Using the Redis database as a cache, find all posts in the given thread,
+  # index their data to an Elasticsearch instance
   process_thread(
     thread_unique = thread_unique,
     rdb = rdb,
