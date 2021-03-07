@@ -180,11 +180,15 @@ class Post:
     # save all post fields in a single dictionary, used as a document for an
     # Elasticsearch instance
     self.post_es_document = {
-      'post_id' : self.post_id,
       'thread_id' : self.thread_id,
+      'post_id' : self.post_id,
+      'post_url' : self.post_url,
       'author_username' : self.post_author_username,
+      'author_user_id' : self.post_author_user_id,
       'post_datetime' : datetime.fromisoformat( self.post_datetime ),
-      'post_text' : self.post_text }
+      'post_text' : self.post_text,
+      'links' : links,
+      'images' : images }
 
     # generate list of dicts for blockquote fields
     #.........................................................................#
