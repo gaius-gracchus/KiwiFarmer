@@ -10,7 +10,7 @@ from bs4 import BeautifulSoup
 import requests
 
 import redis
-from elasticsearch import Elasticsearch
+import elasticsearch
 
 import kiwifarmer
 
@@ -27,18 +27,16 @@ REDIS_HOST = 'localhost'
 # Redis instance port number
 REDIS_PORT = 6379
 # Redis instance database number
-REDIS_DB = 1
+REDIS_DB = 2
 
 # List of hosts for Elasticsearch instance
 ES_HOSTS = [ { 'host' : 'localhost','port' : 9200 }, ]
 # Name of Elasticsearch index to store data in
 ES_INDEX = 'kf_posts'
 
-# Threads that fail
-FAILING_THREADS = [ (
-  'chris-dream-and-ian-flynn.7495', {
-    'last_mod' : '2015-02-02T21:55:03+00:00',
-    'last_page' : 0 }, ) ]
+# If thread HTML contains this string, it's been deleted, and contains no posts
+DELETED_THREAD_STRING = \
+  'Something went wrong. Please try again or contact the administrator.'
 
 ###############################################################################
 
@@ -52,7 +50,7 @@ def get_page_url( thread_unique, page ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
-def process_thread( thread_unique, rdb, es ):
+def process_thread( thread_unique, last_mod, rdb, es ):
 
   """Process all posts in the thread corresponding to the specified
   `thread_unique` and index using an Elasticsearch index.
@@ -62,6 +60,9 @@ def process_thread( thread_unique, rdb, es ):
   thread_unique : str
     Section of KiwiFarms thread URL that uniquely defines a single thread.
     e.g. ``'music-suggestion-i-need-some-shit.86136'``
+  last_mod : str
+    Datetime of the last time the thread was modified, in ISO-8601 format
+    e.g. ``'2017-07-03T20:25:56+00:00'``
   rdb : redis.Redis instance
     Redis database used for caching
   es : elasticsearch.Elasticsearch instance
@@ -80,6 +81,22 @@ def process_thread( thread_unique, rdb, es ):
   # Get the updated last page of the thread
   page_url = get_page_url( thread_unique, start_page )
   r = requests.get( page_url )
+
+  # Check if the thread has been deleted (which would otherwise cause the
+  # indexing of the posts to fail, since there are no posts )
+  if DELETED_THREAD_STRING in r.text:
+
+    # Define Redis hash corresponding to the thread (stores the last modified
+    # datetime and the updated last page of the thread), for deleted thread
+    mapping = {
+      'last_mod' : last_mod,
+      'last_page' : 0 }
+
+    # Store the data corresponding to the deleted thread in the Redis database
+    rdb.hset( name = thread_unique, mapping = mapping)
+
+    return None
+
   thread_page = BeautifulSoup( r.content, features = 'lxml' )
   new_last_page = kiwifarmer.functions.get_thread_last_page( thread_page )
 
@@ -137,13 +154,8 @@ rdb = redis.Redis(
   port = REDIS_PORT,
   db = REDIS_DB )
 
-# Add data from failing threads to Redis database so they get skipped
-for thread_unique, mapping in FAILING_THREADS:
-  if not rdb.exists( thread_unique ):
-    rdb.hset( name = thread_unique, mapping = mapping)
-
 # Connect to Elasticsearch instance using specified list of hosts
-es = Elasticsearch(
+es = elasticsearch.Elasticsearch(
   hosts = ES_HOSTS )
 
 # Get list of all URLs and their last modified date in the site's sitemap
@@ -179,7 +191,7 @@ for sub_sitemap_url in sub_sitemap_urls:
 
 # Initialize list of threads that have not been processed, or have been updated
 # since the last time they were processed
-threads_to_process = list( )
+threads_to_process = dict( )
 
 # Loop over all url objects corresponding to threads
 for url in thread_urls:
@@ -194,7 +206,7 @@ for url in thread_urls:
   # process
   if not rdb.exists( thread_unique ):
 
-    threads_to_process.append( thread_unique )
+    threads_to_process[ thread_unique ] = last_mod
 
   # If the given thread has been updated since the last time it was processed,
   # add it to the list of threads to processed
@@ -204,13 +216,13 @@ for url in thread_urls:
 
     if dt.fromisoformat( prev_last_mod ) < dt.fromisoformat( last_mod ):
 
-      threads_to_process.append( thread_unique )
+      threads_to_process[ thread_unique ] = last_mod
 
 # Process all threads that need to be ingested
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
 # Loop over all threads that need to be processed
-for thread_unique in threads_to_process:
+for thread_unique, last_mod in threads_to_process.items( ):
 
   print( thread_unique )
 
@@ -218,6 +230,7 @@ for thread_unique in threads_to_process:
   # index their data to an Elasticsearch instance
   process_thread(
     thread_unique = thread_unique,
+    last_mod = last_mod,
     rdb = rdb,
     es = es )
 
