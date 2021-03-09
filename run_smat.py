@@ -27,7 +27,7 @@ REDIS_HOST = 'localhost'
 # Redis instance port number
 REDIS_PORT = 6379
 # Redis instance database number
-REDIS_DB = 2
+REDIS_DB = 1
 
 # List of hosts for Elasticsearch instance
 ES_HOSTS = [ { 'host' : 'localhost','port' : 9200 }, ]
@@ -47,6 +47,82 @@ def get_page_url( thread_unique, page ):
   """
 
   return f'https://kiwifarms.net/threads/{thread_unique}/page-{page}'
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_threads_to_process( rdb, es ):
+
+  """Get list of all thread unique strings and their last modified date from the
+  sitemap, corresponding to threads that have been added or modified since the
+  last time script was run.
+
+  Parameters
+  ----------
+  rdb : redis.Redis instance
+    Redis database used for caching
+  es : elasticsearch.Elasticsearch instance
+    Elasticsearch instance for indexing data
+
+  """
+
+  # Get list of all sub-sitemap URLS contained in the main KiwiFarms sitemap
+  r = requests.get( SITEMAP_URL )
+  soup = BeautifulSoup( r.content, features = 'lxml' )
+  locs = soup.find_all( 'loc' )
+  sub_sitemap_urls = [ loc.text for loc in locs ]
+
+  # Initialize list to store all thread url objects from all sitemaps
+  thread_urls = list( )
+
+  # Loop over all sub-sitemaps
+  for sub_sitemap_url in sub_sitemap_urls:
+
+    # Parse HTML of sub-sitemap, get list of all url objects in the sub-sitemap
+    r = requests.get( sub_sitemap_url )
+    soup = BeautifulSoup( r.content, features = 'lxml' )
+    all_urls = soup.find_all( 'url' )
+
+    # Only include url objects that refer to a KiwiFarms thread
+    _thread_urls = [ url for url in all_urls if \
+      url.find( 'loc' ).text.startswith( THREAD_PATTERN ) ]
+
+    # Store thread url objects from the sitemap in the list for all sitemaps
+    thread_urls.extend( _thread_urls )
+
+  # Get list of all threads that have not been ingested, or have new posts
+  # since the last ingest
+  #---------------------------------------------------------------------------#
+
+  # Initialize list of threads that have not been processed, or have been
+  # updated since the last time they were processed
+  threads_to_process = dict( )
+
+  # Loop over all url objects corresponding to threads
+  for url in thread_urls:
+
+    # Extract the unique identifier for the given thread
+    thread_unique = url.find( 'loc' ).text.split( '/' )[ -2 ]
+
+    # Extract the last modified datetime for the given thread
+    last_mod = url.find( 'lastmod' ).text
+
+    # If the given thread hasn't been processed, add it to the list of threads
+    # to process
+    if not rdb.exists( thread_unique ):
+
+      threads_to_process[ thread_unique ] = last_mod
+
+    # If the given thread has been updated since the last time it was processed,
+    # add it to the list of threads to processed
+    else:
+
+      prev_last_mod = rdb.hget( thread_unique, 'last_mod' ).decode( 'utf-8' )
+
+      if dt.fromisoformat( prev_last_mod ) < dt.fromisoformat( last_mod ):
+
+        threads_to_process[ thread_unique ] = last_mod
+
+  return threads_to_process
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
@@ -100,9 +176,6 @@ def process_thread( thread_unique, last_mod, rdb, es ):
   thread_page = BeautifulSoup( r.content, features = 'lxml' )
   new_last_page = kiwifarmer.functions.get_thread_last_page( thread_page )
 
-  # Initialize list of post timestamps, for updating the last modified datetime
-  post_timestamps = list( )
-
   # Loop over all pages in the thread that haven't been fully processed
   for page in range( int( start_page ), int( new_last_page ) + 1 ):
 
@@ -129,109 +202,61 @@ def process_thread( thread_unique, last_mod, rdb, es ):
       _id = doc.pop( 'post_id' )
 
       # Index the post
-      res = es.index( index = ES_INDEX, id = _id, body = doc )
-
-      # append the datetime of the post to the list of post datetimes
-      post_timestamps.append( doc[ 'post_datetime' ] )
+      es.index( index = ES_INDEX, id = _id, body = doc )
 
   # Define Redis hash corresponding to the thread (stores the last modified
   # datetime and the updated last page of the thread)
   mapping = {
-    'last_mod' : max( post_timestamps ).isoformat( ),
+    'last_mod' : last_mod,
     'last_page' : new_last_page }
 
   # Store the data corresponding to the thread in the Redis database
   rdb.hset( name = thread_unique, mapping = mapping)
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def ingest( ):
+
+  """Ingest KiwiFarms posts into Elasticsearch instance
+  """
+
+  # Connect to Redis database using specified host, port, and database number
+  rdb = redis.Redis(
+    host = REDIS_HOST,
+    port = REDIS_PORT,
+    db = REDIS_DB )
+
+  # Connect to Elasticsearch instance using specified list of hosts
+  es = elasticsearch.Elasticsearch(
+    hosts = ES_HOSTS )
+
+  # Process all threads that need to be ingested
+  #---------------------------------------------------------------------------#
+
+  threads_to_process = get_threads_to_process( rdb = rdb, es = es )
+
+  # Loop over all threads that need to be processed
+  for thread_unique, last_mod in threads_to_process.items( ):
+
+    print( thread_unique )
+
+    # Using the Redis database as a cache, find all posts in the given thread,
+    # index their data to an Elasticsearch instance
+    process_thread(
+      thread_unique = thread_unique,
+      last_mod = last_mod,
+      rdb = rdb,
+      es = es )
+
 ###############################################################################
 
-# Connect to Redis database and Elasticsearch instance
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+if __name__ == '__main__':
 
-# Connect to Redis database using specified host, port, and database number
-rdb = redis.Redis(
-  host = REDIS_HOST,
-  port = REDIS_PORT,
-  db = REDIS_DB )
+  while True:
 
-# Connect to Elasticsearch instance using specified list of hosts
-es = elasticsearch.Elasticsearch(
-  hosts = ES_HOSTS )
-
-# Get list of all URLs and their last modified date in the site's sitemap
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-# Get list of all sub-sitemap URLS contained in the main KiwiFarms sitemap
-r = requests.get( SITEMAP_URL )
-soup = BeautifulSoup( r.content, features = 'lxml' )
-locs = soup.find_all( 'loc' )
-sub_sitemap_urls = [ loc.text for loc in locs ]
-
-# Initialize list to store all thread url objects from all sitemaps
-thread_urls = list( )
-
-# Loop over all sub-sitemaps
-for sub_sitemap_url in sub_sitemap_urls:
-
-  # Parse HTML of sub-sitemap, get list of all url objects in the sub-sitemap
-  r = requests.get( sub_sitemap_url )
-  soup = BeautifulSoup( r.content, features = 'lxml' )
-  all_urls = soup.find_all( 'url' )
-
-  # Only include url objects that refer to a KiwiFarms thread
-  _thread_urls = [ url for url in all_urls if \
-    url.find( 'loc' ).text.startswith( THREAD_PATTERN ) ]
-
-  # Store thread url objects from the sitemap in the list for all sitemaps
-  thread_urls.extend( _thread_urls )
-
-# Get list of all threads that have not been ingested, or have new posts
-# since the last ingest
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-# Initialize list of threads that have not been processed, or have been updated
-# since the last time they were processed
-threads_to_process = dict( )
-
-# Loop over all url objects corresponding to threads
-for url in thread_urls:
-
-  # Extract the unique identifier for the given thread
-  thread_unique = url.find( 'loc' ).text.split( '/' )[ -2 ]
-
-  # Extract the last modified datetime for the given thread
-  last_mod = url.find( 'lastmod' ).text
-
-  # If the given thread hasn't been processed, add it to the list of threads to
-  # process
-  if not rdb.exists( thread_unique ):
-
-    threads_to_process[ thread_unique ] = last_mod
-
-  # If the given thread has been updated since the last time it was processed,
-  # add it to the list of threads to processed
-  else:
-
-    prev_last_mod = rdb.hget( thread_unique, 'last_mod' ).decode( 'utf-8' )
-
-    if dt.fromisoformat( prev_last_mod ) < dt.fromisoformat( last_mod ):
-
-      threads_to_process[ thread_unique ] = last_mod
-
-# Process all threads that need to be ingested
-#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
-
-# Loop over all threads that need to be processed
-for thread_unique, last_mod in threads_to_process.items( ):
-
-  print( thread_unique )
-
-  # Using the Redis database as a cache, find all posts in the given thread,
-  # index their data to an Elasticsearch instance
-  process_thread(
-    thread_unique = thread_unique,
-    last_mod = last_mod,
-    rdb = rdb,
-    es = es )
+    try:
+      ingest( )
+    except:
+      pass
 
 ###############################################################################
