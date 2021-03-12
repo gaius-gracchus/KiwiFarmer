@@ -329,6 +329,31 @@ def get_post_timestamp( post ):
 
 #+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
 
+def get_post_datetime( post ):
+
+  """Extract post creation datetime from post BeautifulSoup object.
+
+  Parameters
+  ----------
+  post : bs4.element.Tag
+    BeautifulSoup object containing parsable representation of HTML for a post
+    in the thread
+
+  Returns
+  -------
+  int
+    Datetime of post creation
+    e.g. ``'2021-03-04T22:55:38-0600'``
+
+  """
+
+  s = post.find('time', {'class' : "u-dt" } )['datetime']
+
+  # Convert to proper ISO 8601 format
+  return s[ :-2 ] + ':' + s[ -2 : ]
+
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
 def get_post_url( post ):
 
   """Extract post url from post BeautifulSoup object.

@@ -5,6 +5,8 @@
 
 ###############################################################################
 
+from datetime import datetime
+
 import requests
 from bs4 import BeautifulSoup
 
@@ -159,6 +161,8 @@ class Post:
     self.post_author_user_id = functions.get_post_author_user_id( post = self.post )
     # store post timestamp as class variable
     self.post_timestamp = functions.get_post_timestamp( post = self.post )
+    # store post datetime as class variable
+    self.post_datetime = functions.get_post_datetime( post = self.post )
     # store post url as class variable
     self.post_url = functions.get_post_url( post = self.post )
 
@@ -172,6 +176,19 @@ class Post:
       'author_user_id' : self.post_author_user_id,
       'post_timestamp' : self.post_timestamp,
       'post_text' : self.post_text }
+
+    # save all post fields in a single dictionary, used as a document for an
+    # Elasticsearch instance
+    self.post_es_document = {
+      'thread_id' : self.thread_id,
+      'post_id' : self.post_id,
+      'post_url' : self.post_url,
+      'author_username' : self.post_author_username,
+      'author_user_id' : self.post_author_user_id,
+      'post_datetime' : datetime.fromisoformat( self.post_datetime ),
+      'post_text' : self.post_text,
+      'links' : links,
+      'images' : images }
 
     # generate list of dicts for blockquote fields
     #.........................................................................#

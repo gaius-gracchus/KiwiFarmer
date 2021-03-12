@@ -41,7 +41,10 @@ setup(
       'pytest-cov >= 2.10.1',
       'pytest-html >= 3.0.0',
       'pytest-metadata >= 1.10.0',
-      'pytest-asyncio >= 0.14.0' ], },
+      'pytest-asyncio >= 0.14.0' ],
+    'smat': [
+      'redis >= 3.5.3',
+      'elasticsearch >= 7.0.0, < 8.0.0' ], },
   include_package_data = True,
   zip_safe = False )
 
