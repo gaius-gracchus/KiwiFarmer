@@ -10,8 +10,9 @@ import os
 from bs4 import BeautifulSoup
 import mysql.connector
 from mysql.connector import errorcode
+import requests
 
-from kiwifarmer import base, templates
+from kiwifarmer import base, templates, utils
 
 ###############################################################################
 
@@ -19,9 +20,29 @@ REACTION_PAGE_DIR = '../../data_20210224/downloaded_reactions'
 
 REACTION_FILTERED_LIST = '../../data_20210224/downloaded_reactions_filtered.txt'
 
-START = 550000
+START = 0
 
 DATABASE = 'kiwifarms_20210224'
+
+###############################################################################
+
+def process_reaction_page( page_file, cursor ):
+
+  with open( os.path.join( REACTION_PAGE_DIR, page_file ), 'r' ) as f:
+
+    _reaction_page = BeautifulSoup( f.read( ), 'lxml' )
+
+  reaction_page = base.ReactionPage( reaction_page = _reaction_page )
+
+  reaction_soups = reaction_page.get_reaction_soups( )
+
+  post_id = reaction_page.post_id
+
+  for j, reaction in enumerate( reaction_soups ):
+
+    reaction = base.Reaction( reaction = reaction, post_id = post_id )
+
+    cursor.execute(templates.ADD_REACTION, reaction.reaction_insertion )
 
 ###############################################################################
 
@@ -67,21 +88,22 @@ if __name__ == '__main__':
 
     print( f'[ {i + START} / {N_pages} ]', page_file )
 
-    with open( os.path.join( REACTION_PAGE_DIR, page_file ), 'r' ) as f:
+    try:
 
-      _reaction_page = BeautifulSoup( f.read( ), 'lxml' )
+      process_reaction_page( page_file, cursor )
 
-    reaction_page = base.ReactionPage( reaction_page = _reaction_page )
+    except Exception as e:
 
-    reaction_soups = reaction_page.get_reaction_soups( )
+      print( e )
 
-    post_id = reaction_page.post_id
+      page_url = utils.reaction_filename_to_url( page_file )
+      r = requests.get( page_url )
 
-    for j, reaction in enumerate( reaction_soups ):
+      output_file = os.path.join( REACTION_PAGE_DIR, page_file )
+      with open( output_file, 'wb' ) as f:
+        f.write( r.content )
 
-      reaction = base.Reaction( reaction = reaction, post_id = post_id )
-
-      cursor.execute(templates.ADD_REACTION, reaction.reaction_insertion)
+      process_reaction_page( page_file, cursor )
 
   cnx.commit()
   cursor.close()

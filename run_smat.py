@@ -248,6 +248,9 @@ def ingest( ):
       rdb = rdb,
       es = es )
 
+  # Save Redis database
+  rdb.bgsave( )
+
 ###############################################################################
 
 if __name__ == '__main__':
@@ -256,7 +259,7 @@ if __name__ == '__main__':
 
     try:
       ingest( )
-    except:
-      pass
+    except Exception as e:
+      print( e )
 
 ###############################################################################
