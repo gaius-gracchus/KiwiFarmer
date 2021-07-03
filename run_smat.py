@@ -253,6 +253,9 @@ def ingest( ):
       rdb = rdb,
       es = es )
 
+  # Save Redis database
+  rdb.bgsave( )
+
 ###############################################################################
 
 if __name__ == '__main__':

@@ -112,7 +112,7 @@ TABLES = {
     "  `author_username` varchar(128),"
     "  `author_user_id` mediumint,"
     "  `reaction_id` tinyint,"
-    "  `reaction_name` varchar(16) NOT NULL,"
+    "  `reaction_name` varchar(128) NOT NULL,"
     "  `reaction_timestamp` int NOT NULL"
     ") ENGINE=InnoDB"),
   'users' : (
