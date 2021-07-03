@@ -186,6 +186,32 @@ def get_thread_timestamp( creation ):
 
   return int( creation.find('time', {'class' : 'u-dt'})['data-time'] )
 
+#+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++#
+
+def get_thread_subforum( thread_page ):
+
+  """Extract subforum path from BeautifulSoup of HTML snippet
+  containing thread information.
+
+  Parameters
+  ----------
+  thread_page : bs4.BeautifulSoup
+    BeautifulSoup object containing parsable representation of HTML for first
+    page of thread
+
+  Returns
+  -------
+  str
+    Timestamp of thread creation
+    e.g. ``'Forums/Lolcow Salon/Amberlynn Reid'``
+
+  """
+
+  breadcrumbs = thread_page.find( 'div', { 'class' : 'block block--breadcrumbs' } )
+  subforum = '/'.join( [ s.text for s in breadcrumbs.find_all( 'span' ) ] )
+
+  return subforum
+
 # Page field extraction functions
 ###############################################################################
 

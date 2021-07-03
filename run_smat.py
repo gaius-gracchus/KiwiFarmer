@@ -176,6 +176,8 @@ def process_thread( thread_unique, last_mod, rdb, es ):
   thread_page = BeautifulSoup( r.content, features = 'lxml' )
   new_last_page = kiwifarmer.functions.get_thread_last_page( thread_page )
 
+  subforum = kiwifarmer.functions.get_thread_subforum( thread_page )
+
   # Loop over all pages in the thread that haven't been fully processed
   for page in range( int( start_page ), int( new_last_page ) + 1 ):
 
@@ -197,6 +199,9 @@ def process_thread( thread_unique, last_mod, rdb, es ):
       # Get a dict containing relevant data fields from the post, to be used as
       # a document for the Elasticsearch index.
       doc = post.post_es_document
+
+      # insert subforum path as field in document
+      doc[ 'subforum' ] = subforum
 
       # Use the post ID number as the Elasticsearch index
       _id = doc.pop( 'post_id' )
@@ -256,7 +261,7 @@ if __name__ == '__main__':
 
     try:
       ingest( )
-    except:
-      pass
+    except Exception as e:
+      print( e )
 
 ###############################################################################
